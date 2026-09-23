@@ -7,8 +7,6 @@ export const WORD_DIRECTIONS = ['across', 'down'];
 
 // Words must use only the letters A-Z and be no longer than GRID_SIZE.
 // Each word is shown with a picture of what it means. See CREDITS.md for sources.
-// To use a recording instead of the built-in voice for a word, add e.g.
-// `sound: 'sounds/cat.m4a'` to its entry.
 export const WORDS = [
   { word: 'CAT', picture: 'images/words/cat.jpg' },
   { word: 'DOG', picture: 'images/words/dog.jpg' },

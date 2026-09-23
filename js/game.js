@@ -4,11 +4,14 @@ import {
 } from './config.js';
 import { makePuzzle, ShuffleBag } from './puzzle.js';
 import { Speaker } from './speech.js';
+import { loadRecordings } from './recordings.js';
+import { openSetup } from './setup.js';
 
 const FADE_MS = 400;
 // A second tap on the same cell within this time is treated as an accidental double tap.
 const REPEAT_TAP_MS = 350;
 const NAME_KEY = 'playerName';
+const SETUP_HOLD_MS = 3000;
 
 const targetEl = document.getElementById('target');
 const wordPictureEl = document.getElementById('word-picture');
@@ -94,26 +97,73 @@ function restartAnimation(el, className) {
   el.classList.add(className);
 }
 
-function fillPhrase(template) {
-  // With a recording of the word, avoid mixing the built-in voice saying it too.
-  const text = template.replaceAll('{word}', entry.sound ? 'it' : word.toLowerCase());
+function fillPhrase(template, theWord) {
+  const text = template.replaceAll('{word}', theWord);
   return playerName ? text.replaceAll('{name}', playerName) : text.replace(/,?\s*\{name\}/g, '');
 }
 
+// Ids of recorded clips. The invitation is recorded once for all words
+// ("Can you find it?"), since the word itself is said just before it.
+const wordClip = (w) => `word:${w}`;
+const INVITE_CLIP = 'invite';
+const praiseClip = (template) => `praise:${template}`;
+
+// Once some praise has been recorded, only recorded praise is used, so the
+// recorded voice is heard whenever the word itself is recorded.
+function nextPraise() {
+  const recorded = PRAISE_PHRASES.filter((t) => speaker.hasClip(praiseClip(t)));
+  if (recorded.length === 0 || !speaker.hasClip(wordClip(word))) return praises.next();
+  const choices = recorded.length > 1 ? recorded.filter((t) => t !== nextPraise.last) : recorded;
+  nextPraise.last = choices[Math.floor(Math.random() * choices.length)];
+  return nextPraise.last;
+}
+
 // Say the word followed by a phrase, e.g. "cat. Can you find cat, Sam?"
-function sayWordThen(template, options) {
-  // Lower case, so short words are said as words rather than spelled out.
-  const parts = [{ text: word.toLowerCase(), recording: entry.sound }, { text: fillPhrase(template) }];
+function sayWordThen(phrase, options) {
+  const parts = [
+    // Lower case, so short words are said as words rather than spelled out.
+    { text: word.toLowerCase(), clip: wordClip(word) },
+    { text: fillPhrase(phrase.template, word.toLowerCase()), clip: phrase.clip },
+  ];
   if (speaker.say(parts, options)) restartAnimation(targetEl, 'speaking');
 }
 
 function onRelease(event) {
   if (sayOnRelease) {
     sayOnRelease = false;
-    sayWordThen(praises.next(), { interrupt: true });
+    const template = nextPraise();
+    sayWordThen({ template, clip: praiseClip(template) }, { interrupt: true });
   } else if (event.type === 'pointerup' && event.target.closest('#target')) {
-    sayWordThen(INVITE_PHRASE);
+    sayWordThen({ template: INVITE_PHRASE, clip: INVITE_CLIP });
   }
+}
+
+function showSetup() {
+  openSetup([
+    {
+      title: 'Words',
+      items: WORDS.map((w) => ({ id: wordClip(w.word), label: w.word.toLowerCase() })),
+    },
+    {
+      title: 'When the picture is tapped (said after the word)',
+      items: [{ id: INVITE_CLIP, label: fillPhrase(INVITE_PHRASE, 'it') }],
+    },
+    {
+      title: 'When the word is found (said after the word)',
+      items: PRAISE_PHRASES.map((t) => ({ id: praiseClip(t), label: fillPhrase(t, 'it') })),
+    },
+  ], speaker);
+}
+
+// Press and hold the top-left corner to open the grown-up screen.
+function watchSetupCorner() {
+  const corner = document.getElementById('setup-corner');
+  let timer = null;
+  const cancel = () => { clearTimeout(timer); timer = null; };
+  corner.addEventListener('pointerdown', () => { timer = setTimeout(showSetup, SETUP_HOLD_MS); });
+  corner.addEventListener('pointerup', cancel);
+  corner.addEventListener('pointercancel', cancel);
+  corner.addEventListener('pointerleave', cancel);
 }
 
 function onTap(event) {
@@ -209,12 +259,22 @@ document.addEventListener('contextmenu', (e) => e.preventDefault());
 document.addEventListener('gesturestart', (e) => e.preventDefault());
 window.addEventListener('resize', fitToScreen);
 
-// Word pictures and recordings are small, so load them all up front to have
-// each ready when its word comes up.
-for (const { picture, sound } of WORDS) {
-  if (picture) new Image().src = picture;
-  speaker.preload(sound);
+// Word pictures are small, so load them all up front to have each ready when its word comes up.
+for (const { picture } of WORDS) if (picture) new Image().src = picture;
+
+async function loadVoiceRecordings() {
+  try {
+    const recordings = await loadRecordings();
+    await Promise.all([...recordings].map(([id, { data }]) => speaker.setClip(id, data).catch(() => {})));
+  } catch {
+    // Without stored recordings the built-in voice is used.
+  }
 }
+
+watchSetupCorner();
+loadVoiceRecordings().then(() => {
+  if (new URLSearchParams(window.location.search).has('setup')) showSetup();
+});
 
 fitToScreen();
 startRound();

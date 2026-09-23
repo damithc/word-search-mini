@@ -29,6 +29,20 @@
     <div id="reward-track"><div id="reward-bar"></div></div>
   </div>
 
+  <!-- Press and hold for 3 seconds to open the grown-up screen -->
+  <div id="setup-corner"></div>
+
+  <div id="setup" hidden>
+    <header>
+      <h1>Voice recordings</h1>
+      <button id="setup-done">Done</button>
+    </header>
+    <p>Record each phrase in your own voice. Recordings stay on this device only.
+      Anything not recorded is said by the device's built-in voice.</p>
+    <p id="setup-message" hidden></p>
+    <div id="setup-list"></div>
+  </div>
+
   <script type="module" src="js/game.js"></script>
 </body>
 </html>
