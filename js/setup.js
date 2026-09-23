@@ -2,6 +2,7 @@
 //
 // Recordings are captured as raw samples rather than with MediaRecorder,
 // because iPad Safari cannot always play back its own compressed recordings.
+// Web Audio is used only to capture them.
 
 import { saveRecording, deleteRecording, keepRecordings } from './recordings.js';
 
@@ -102,7 +103,6 @@ function stopRecording() {
   const { sampleRate, state } = context;
   context.close().catch(() => {});
   setAudioSession('playback');
-  speaker.resetAudio();
 
   const samples = new Float32Array(chunks.reduce((n, c) => n + c.length, 0));
   let at = 0;
@@ -173,6 +173,7 @@ export function openSetup(sections, theSpeaker) {
     })];
   }));
   showMessage('');
+  speaker.onError = (error) => showMessage(`The recording could not be played (${error}).`);
   setupEl.hidden = false;
 }
 
@@ -180,5 +181,6 @@ listEl.addEventListener('click', onClick);
 doneButton.addEventListener('click', () => {
   stopRecording();
   speaker.stop();
+  speaker.onError = null;
   setupEl.hidden = true;
 });

@@ -1,10 +1,13 @@
 // Says short sequences of phrases aloud, using a recorded clip for each
 // phrase that has one and the device's built-in voice for the rest.
 //
+// Clips are played with an <audio> element rather than Web Audio, because
+// iPad Safari mutes Web Audio when the iPad is in Silent mode.
+//
 // iPad Safari only lets sound start from a tap (the finger lifting, not
-// landing), though once speech or clip playback has been started from a tap
-// it may continue later. So call say() from a pointerup or click handler;
-// it starts everything the sequence needs at that moment.
+// landing), though once the voice or the audio element has been started from
+// a tap it may continue later. So call say() from a pointerup or click
+// handler; it starts everything the sequence needs at that moment.
 
 // Ignore requests that come sooner than this after the last one, so repeated
 // taps don't keep restarting the speech.
@@ -12,7 +15,8 @@ const MIN_GAP_MS = 1000;
 // Treat a sequence as finished after this long even if an end event never
 // arrives, which some browsers occasionally fail to send.
 const MAX_BUSY_MS = 10000;
-const PART_TIMEOUT_MS = 6000;
+const SPEECH_TIMEOUT_MS = 6000;
+const CLIP_TIMEOUT_MS = 1000; // allowed beyond the clip's length
 // Clips are made about equally loud, without boosting quiet ones too much.
 const TARGET_PEAK = 0.8;
 const MAX_GAIN = 6;
@@ -21,10 +25,8 @@ const NOVELTY_VOICES = new RegExp('^(Albert|Bad News|Bahh|Bells|Boing|Bubbles|Ce
   + 'Organ|Superstar|Trinoids|Whisper|Wobble|Zarvox|Fred|Junior|Kathy|Ralph|'
   + 'Eddy|Flo|Grandma|Grandpa|Reed|Rocko|Sandy|Shelley)\\b', 'i');
 
-// Finds the spoken part of a recording (dropping silence before and after)
-// and the gain that brings it to a standard loudness.
-function trimAndLevel(buffer) {
-  const samples = buffer.getChannelData(0);
+// Drops the silence before and after the spoken part of a recording.
+function trim(samples, sampleRate) {
   let peak = 0;
   for (const s of samples) peak = Math.max(peak, Math.abs(s));
   const threshold = Math.max(0.01, peak * 0.08);
@@ -32,18 +34,38 @@ function trimAndLevel(buffer) {
   while (first < samples.length && Math.abs(samples[first]) < threshold) first++;
   let last = samples.length - 1;
   while (last > first && Math.abs(samples[last]) < threshold) last--;
-  if (first >= last) return { buffer, offset: 0, duration: buffer.duration, gain: 1 };
-
-  const rate = buffer.sampleRate;
-  const start = Math.max(0, first - Math.round(0.05 * rate));
-  const end = Math.min(samples.length, last + Math.round(0.15 * rate));
-  return {
-    buffer,
-    offset: start / rate,
-    duration: (end - start) / rate,
-    gain: Math.min(TARGET_PEAK / peak, MAX_GAIN),
-  };
+  if (first >= last) return samples;
+  const start = Math.max(0, first - Math.round(0.05 * sampleRate));
+  const end = Math.min(samples.length, last + Math.round(0.15 * sampleRate));
+  return samples.subarray(start, end);
 }
+
+// Makes a 16-bit mono WAV file, brought to a standard loudness.
+function toWav(samples, sampleRate) {
+  let peak = 0;
+  for (const s of samples) peak = Math.max(peak, Math.abs(s));
+  const gain = peak > 0 ? Math.min(TARGET_PEAK / peak, MAX_GAIN) : 1;
+  const view = new DataView(new ArrayBuffer(44 + samples.length * 2));
+  const text = (at, s) => [...s].forEach((c, i) => view.setUint8(at + i, c.charCodeAt(0)));
+  text(0, 'RIFF');
+  view.setUint32(4, 36 + samples.length * 2, true);
+  text(8, 'WAVEfmt ');
+  view.setUint32(16, 16, true); // format chunk size
+  view.setUint16(20, 1, true); // PCM
+  view.setUint16(22, 1, true); // mono
+  view.setUint32(24, sampleRate, true);
+  view.setUint32(28, sampleRate * 2, true); // bytes per second
+  view.setUint16(32, 2, true); // bytes per sample
+  view.setUint16(34, 16, true); // bits per sample
+  text(36, 'data');
+  view.setUint32(40, samples.length * 2, true);
+  samples.forEach((s, i) => view.setInt16(44 + i * 2, Math.max(-1, Math.min(1, s * gain)) * 0x7fff, true));
+  return new Blob([view], { type: 'audio/wav' });
+}
+
+// A tenth of a second of silence, played to let the audio element be used
+// later without a tap.
+const SILENCE_URL = URL.createObjectURL(toWav(new Float32Array(4410), 44100));
 
 // Calls fn at most once.
 function once(fn) {
@@ -63,12 +85,12 @@ export class Speaker {
     this.lang = lang;
     this.rate = rate;
     this.pauseMs = pauseMs;
-    this.clips = new Map(); // clip id -> trimmed, levelled recording
-    this.sources = []; // clips playing
+    this.clips = new Map(); // clip id -> { url, duration }
+    this.player = new Audio();
     this.sequence = null; // identifies the sequence being said
     this.lastSaidAt = -Infinity;
-    this.context = null;
     this.voice = null;
+    this.onError = null; // called with a description when a clip fails to play
 
     if (this.enabled && 'speechSynthesis' in window) {
       this.pickVoice();
@@ -88,38 +110,27 @@ export class Speaker {
     this.voice = voices[0] ?? null;
   }
 
-  audioContext() {
-    if (!this.context || this.context.state === 'closed') {
-      this.context = new (window.AudioContext || window.webkitAudioContext)();
-    }
-    return this.context;
-  }
-
-  // Starts over with a fresh audio output. iPad Safari can leave the old one
-  // silent after the microphone has been used.
-  resetAudio() {
-    this.stop();
-    this.context?.close().catch(() => {});
-    this.context = null;
+  // Adds a clip from raw samples. Returns the samples with silence trimmed off.
+  setClipFromSamples(id, samples, sampleRate) {
+    const trimmed = trim(samples, sampleRate);
+    this.removeClip(id);
+    this.clips.set(id, {
+      url: URL.createObjectURL(toWav(trimmed, sampleRate)),
+      duration: trimmed.length / sampleRate,
+    });
+    return trimmed;
   }
 
   // Adds a clip from a compressed recording (as saved by older versions).
   async setClipFromFile(id, data) {
-    const buffer = await this.audioContext().decodeAudioData(data.slice(0));
-    this.clips.set(id, trimAndLevel(buffer));
-  }
-
-  // Adds a clip from raw samples. Returns the samples with silence trimmed off.
-  setClipFromSamples(id, samples, sampleRate) {
-    const buffer = new AudioBuffer({ length: samples.length, numberOfChannels: 1, sampleRate });
-    buffer.copyToChannel(samples, 0);
-    const clip = trimAndLevel(buffer);
-    this.clips.set(id, clip);
-    const start = Math.round(clip.offset * sampleRate);
-    return samples.subarray(start, start + Math.round(clip.duration * sampleRate));
+    const decoder = new OfflineAudioContext(1, 1, 44100);
+    const buffer = await decoder.decodeAudioData(data.slice(0));
+    this.setClipFromSamples(id, buffer.getChannelData(0), buffer.sampleRate);
   }
 
   removeClip(id) {
+    const clip = this.clips.get(id);
+    if (clip) URL.revokeObjectURL(clip.url);
     this.clips.delete(id);
   }
 
@@ -142,7 +153,7 @@ export class Speaker {
     const steps = parts.map((part) => ({ text: part.text, clip: part.clip && this.clips.get(part.clip) }));
 
     // Unlock now, during the tap, whatever later parts will need.
-    if (steps.some((step) => step.clip)) this.audioContext().resume();
+    if (!steps[0].clip && steps.some((step) => step.clip)) this.playUrl(SILENCE_URL).catch(() => {});
     if (steps[0].clip && steps.some((step) => !step.clip)) this.speak(' ', { volume: 0 });
 
     const sequence = {};
@@ -159,43 +170,44 @@ export class Speaker {
     }
     const step = steps[index];
     const next = once(() => setTimeout(() => this.playFrom(steps, index + 1, sequence), this.pauseMs));
+    if (step.clip) this.sayWithClip(step, next, sequence);
+    else this.sayWithVoice(step.text, next);
+  }
 
-    if (step.clip) {
-      const context = this.audioContext();
-      const source = context.createBufferSource();
-      source.buffer = step.clip.buffer;
-      const gain = context.createGain();
-      gain.gain.value = step.clip.gain;
-      source.connect(gain).connect(context.destination);
-      source.onended = next;
-      source.start(context.currentTime + 0.05, step.clip.offset, step.clip.duration);
-      this.sources.push(source);
-      setTimeout(next, step.clip.duration * 1000 + PART_TIMEOUT_MS);
-      return;
-    }
+  sayWithClip(step, next, sequence) {
+    const timer = setTimeout(next, step.clip.duration * 1000 + CLIP_TIMEOUT_MS);
+    this.player.onended = next;
+    this.playUrl(step.clip.url).catch((error) => {
+      if (this.sequence !== sequence) return; // stopped while starting
+      // Say it with the built-in voice instead.
+      clearTimeout(timer);
+      this.player.onended = null;
+      this.onError?.(`${error.name}: ${error.message}`);
+      this.sayWithVoice(step.text, next);
+    });
+  }
 
-    const utterance = this.speak(step.text);
+  sayWithVoice(text, next) {
+    const utterance = this.speak(text);
     if (!utterance) {
       next();
       return;
     }
     utterance.onend = next;
     utterance.onerror = next;
-    setTimeout(next, PART_TIMEOUT_MS);
+    setTimeout(next, SPEECH_TIMEOUT_MS);
+  }
+
+  playUrl(url) {
+    this.player.src = url;
+    return this.player.play();
   }
 
   stop() {
     this.sequence = null;
     if ('speechSynthesis' in window) speechSynthesis.cancel();
-    for (const source of this.sources) {
-      source.onended = null;
-      try {
-        source.stop();
-      } catch {
-        // already stopped
-      }
-    }
-    this.sources = [];
+    this.player.onended = null;
+    this.player.pause();
   }
 
   speak(text, { volume = 1 } = {}) {
