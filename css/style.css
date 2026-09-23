@@ -54,6 +54,12 @@ body {
   display: flex;
   align-items: center;
   gap: var(--picture-gap);
+  cursor: pointer;
+}
+
+/* A gentle pulse shows the tap was heard while the word is said */
+#target.speaking #word-img {
+  animation: pop 500ms ease-out;
 }
 
 #word-picture {
@@ -209,6 +215,7 @@ body {
 
 @media (prefers-reduced-motion: reduce) {
   .nope .face,
+  #target.speaking #word-img,
   .cell.found .face,
   .tile.found .face {
     animation: none;

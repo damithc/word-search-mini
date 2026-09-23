@@ -7,6 +7,8 @@ export const WORD_DIRECTIONS = ['across', 'down'];
 
 // Words must use only the letters A-Z and be no longer than GRID_SIZE.
 // Each word is shown with a picture of what it means. See CREDITS.md for sources.
+// To use a recording instead of the built-in voice for a word, add e.g.
+// `sound: 'sounds/cat.m4a'` to its entry.
 export const WORDS = [
   { word: 'CAT', picture: 'images/words/cat.jpg' },
   { word: 'DOG', picture: 'images/words/dog.jpg' },
@@ -19,6 +21,10 @@ export const WORDS = [
   { word: 'BED', picture: 'images/words/bed.jpg' },
   { word: 'FISH', picture: 'images/words/fish.jpg' },
 ];
+
+// The word is said aloud when the picture or word is tapped, and when the word is found.
+// `lang` picks the built-in voice's accent; `rate` below 1 speaks more slowly.
+export const SPEECH = { enabled: true, lang: 'en-US', rate: 0.8 };
 
 // Pictures shown after a word is found.
 export const REWARD_PICTURES = Array.from({ length: 10 },

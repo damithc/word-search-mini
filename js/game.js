@@ -1,12 +1,14 @@
 import {
-  GRID_SIZE, WORD_DIRECTIONS, WORDS, REWARD_PICTURES, FOUND_PAUSE_MS, REWARD_MS,
+  GRID_SIZE, WORD_DIRECTIONS, WORDS, SPEECH, REWARD_PICTURES, FOUND_PAUSE_MS, REWARD_MS,
 } from './config.js';
 import { makePuzzle, ShuffleBag } from './puzzle.js';
+import { Speaker } from './speech.js';
 
 const FADE_MS = 400;
 // A second tap on the same cell within this time is treated as an accidental double tap.
 const REPEAT_TAP_MS = 350;
 
+const targetEl = document.getElementById('target');
 const wordPictureEl = document.getElementById('word-picture');
 const wordImg = document.getElementById('word-img');
 const lettersEl = document.getElementById('word-letters');
@@ -17,12 +19,15 @@ const rewardBar = document.getElementById('reward-bar');
 
 const words = new ShuffleBag(WORDS);
 const pictures = new ShuffleBag(REWARD_PICTURES);
+const speaker = new Speaker(SPEECH);
 
+let entry = null; // current item from WORDS
 let word = '';
 let wordIndexOfCell = new Map(); // cell index -> position in word
 let selected = new Set(); // cell indices
 let locked = false;
 let nextPicture = null;
+let sayOnRelease = false; // say the word when the finger that found it lifts
 const lastTapAt = new Map();
 
 function preloadNextPicture() {
@@ -41,7 +46,7 @@ function makeTile(letter, className) {
 }
 
 function startRound() {
-  const entry = words.next();
+  entry = words.next();
   word = entry.word;
   const { grid, cells } = makePuzzle(word, GRID_SIZE, WORD_DIRECTIONS);
   wordIndexOfCell = new Map(cells.map(([r, c], k) => [r * GRID_SIZE + c, k]));
@@ -63,10 +68,23 @@ function startRound() {
   locked = false;
 }
 
-function wiggle(cell) {
-  cell.classList.remove('nope');
-  void cell.offsetWidth; // restart the animation
-  cell.classList.add('nope');
+function restartAnimation(el, className) {
+  el.classList.remove(className);
+  void el.offsetWidth;
+  el.classList.add(className);
+}
+
+function sayWord() {
+  if (speaker.say(word, entry.sound)) restartAnimation(targetEl, 'speaking');
+}
+
+function onRelease(event) {
+  if (sayOnRelease) {
+    sayOnRelease = false;
+    sayWord();
+  } else if (event.type === 'pointerup' && event.target.closest('#target')) {
+    sayWord();
+  }
 }
 
 function onTap(event) {
@@ -80,7 +98,7 @@ function onTap(event) {
   lastTapAt.set(index, now);
 
   if (!wordIndexOfCell.has(index)) {
-    wiggle(cell);
+    restartAnimation(cell, 'nope');
     return;
   }
 
@@ -100,6 +118,7 @@ function onTap(event) {
 
 function celebrate() {
   locked = true;
+  sayOnRelease = true;
   for (const index of selected) gridEl.children[index].classList.add('found');
   for (const tile of lettersEl.children) tile.classList.add('found');
   setTimeout(showReward, FOUND_PAUSE_MS);
@@ -154,13 +173,19 @@ function fitToScreen() {
 }
 
 gridEl.addEventListener('pointerdown', onTap);
+document.addEventListener('pointerup', onRelease);
+document.addEventListener('pointercancel', onRelease);
 // Stop long-press menus and pinch zoom from getting in the way.
 document.addEventListener('contextmenu', (e) => e.preventDefault());
 document.addEventListener('gesturestart', (e) => e.preventDefault());
 window.addEventListener('resize', fitToScreen);
 
-// Word pictures are small, so load them all up front to have each ready when its word comes up.
-for (const { picture } of WORDS) if (picture) new Image().src = picture;
+// Word pictures and recordings are small, so load them all up front to have
+// each ready when its word comes up.
+for (const { picture, sound } of WORDS) {
+  if (picture) new Image().src = picture;
+  speaker.preload(sound);
+}
 
 fitToScreen();
 startRound();
