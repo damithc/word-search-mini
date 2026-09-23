@@ -21,8 +21,9 @@ export const WORDS = [
 ];
 
 // The word is said aloud when the picture or word is tapped, and when the word is found.
-// `lang` picks the built-in voice's accent; `rate` below 1 speaks more slowly.
-export const SPEECH = { enabled: true, lang: 'en-US', rate: 0.8 };
+// `lang` picks the built-in voice's accent; `rate` below 1 speaks more slowly;
+// `pauseMs` is the pause between the word and the phrase after it.
+export const SPEECH = { enabled: true, lang: 'en-US', rate: 0.8, pauseMs: 500 };
 
 // Phrases said after the word. {word} is the word; {name} is the player's name,
 // taken from the page link (e.g. ?name=Sam). Without a name, ", {name}" is left out.

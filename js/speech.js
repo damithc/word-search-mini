@@ -13,8 +13,6 @@ const MIN_GAP_MS = 1000;
 // arrives, which some browsers occasionally fail to send.
 const MAX_BUSY_MS = 10000;
 const PART_TIMEOUT_MS = 6000;
-// Silence between parts that are recordings.
-const CLIP_GAP_MS = 250;
 // Clips are made about equally loud, without boosting quiet ones too much.
 const TARGET_PEAK = 0.8;
 const MAX_GAIN = 6;
@@ -59,10 +57,12 @@ function once(fn) {
 }
 
 export class Speaker {
-  constructor({ enabled = true, lang = 'en-US', rate = 1 } = {}) {
+  // pauseMs is the silence between the parts of a sequence.
+  constructor({ enabled = true, lang = 'en-US', rate = 1, pauseMs = 500 } = {}) {
     this.enabled = enabled;
     this.lang = lang;
     this.rate = rate;
+    this.pauseMs = pauseMs;
     this.clips = new Map(); // clip id -> trimmed, levelled recording
     this.sources = []; // clips playing
     this.sequence = null; // identifies the sequence being said
@@ -158,9 +158,9 @@ export class Speaker {
       return;
     }
     const step = steps[index];
+    const next = once(() => setTimeout(() => this.playFrom(steps, index + 1, sequence), this.pauseMs));
 
     if (step.clip) {
-      const next = once(() => setTimeout(() => this.playFrom(steps, index + 1, sequence), CLIP_GAP_MS));
       const context = this.audioContext();
       const source = context.createBufferSource();
       source.buffer = step.clip.buffer;
@@ -174,19 +174,14 @@ export class Speaker {
       return;
     }
 
-    // Queue consecutive built-in voice parts together, then carry on after the last.
-    let end = index;
-    while (end < steps.length && !steps[end].clip) end++;
-    const next = once(() => this.playFrom(steps, end, sequence));
-    let utterance = null;
-    for (let i = index; i < end; i++) utterance = this.speak(steps[i].text);
+    const utterance = this.speak(step.text);
     if (!utterance) {
       next();
       return;
     }
     utterance.onend = next;
     utterance.onerror = next;
-    setTimeout(next, PART_TIMEOUT_MS * (end - index));
+    setTimeout(next, PART_TIMEOUT_MS);
   }
 
   stop() {
