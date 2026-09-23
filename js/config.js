@@ -5,19 +5,44 @@ export const GRID_SIZE = 10;
 // Directions a word may run in: 'across' (left to right), 'down' (top to bottom).
 export const WORD_DIRECTIONS = ['across', 'down'];
 
+// Everyday nouns for a young child in Singapore, 3-5 letters long.
 // Words must use only the letters A-Z and be no longer than GRID_SIZE.
 // Each word is shown with a picture of what it means. See CREDITS.md for sources.
 export const WORDS = [
+  // Getting around
+  { word: 'BUS', picture: 'images/words/bus.jpg' },
+  { word: 'CAR', picture: 'images/words/car.jpg' },
+  { word: 'TAXI', picture: 'images/words/taxi.jpg' },
+  { word: 'TRAIN', picture: 'images/words/train.jpg' },
+  { word: 'PLANE', picture: 'images/words/plane.jpg' },
+  { word: 'LIFT', picture: 'images/words/lift.jpg' },
+  // Food
+  { word: 'EGG', picture: 'images/words/egg.jpg' },
+  { word: 'MILK', picture: 'images/words/milk.jpg' },
+  { word: 'CAKE', picture: 'images/words/cake.jpg' },
+  { word: 'RICE', picture: 'images/words/rice.jpg' },
+  { word: 'APPLE', picture: 'images/words/apple.jpg' },
+  { word: 'MANGO', picture: 'images/words/mango.jpg' },
+  // At home
+  { word: 'BED', picture: 'images/words/bed.jpg' },
+  { word: 'CUP', picture: 'images/words/cup.jpg' },
+  { word: 'FAN', picture: 'images/words/fan.jpg' },
+  { word: 'BAG', picture: 'images/words/bag.jpg' },
+  { word: 'BOOK', picture: 'images/words/book.jpg' },
+  { word: 'SHOE', picture: 'images/words/shoe.jpg' },
+  { word: 'BALL', picture: 'images/words/ball.jpg' },
+  { word: 'SPOON', picture: 'images/words/spoon.jpg' },
+  { word: 'CHAIR', picture: 'images/words/chair.jpg' },
+  { word: 'CLOCK', picture: 'images/words/clock.jpg' },
+  // Nature
   { word: 'CAT', picture: 'images/words/cat.jpg' },
   { word: 'DOG', picture: 'images/words/dog.jpg' },
-  { word: 'SUN', picture: 'images/words/sun.jpg' },
-  { word: 'BUS', picture: 'images/words/bus.jpg' },
-  { word: 'HAT', picture: 'images/words/hat.jpg' },
-  { word: 'CAR', picture: 'images/words/car.jpg' },
-  { word: 'PIG', picture: 'images/words/pig.jpg' },
-  { word: 'CUP', picture: 'images/words/cup.jpg' },
-  { word: 'BED', picture: 'images/words/bed.jpg' },
+  { word: 'BIRD', picture: 'images/words/bird.jpg' },
+  { word: 'DUCK', picture: 'images/words/duck.jpg' },
   { word: 'FISH', picture: 'images/words/fish.jpg' },
+  { word: 'TREE', picture: 'images/words/tree.jpg' },
+  { word: 'SUN', picture: 'images/words/sun.jpg' },
+  { word: 'MOON', picture: 'images/words/moon.jpg' },
 ];
 
 // The word is said aloud when the picture or word is tapped, and when the word is found.
