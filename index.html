@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <title>Word Search</title>
+  <meta name="description" content="A simple word search for young children.">
+  <meta name="theme-color" content="#f3f0e8">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Word Search">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" href="images/icon-180.png">
+  <link rel="icon" href="images/icon-192.png">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <main id="game">
+    <div id="target" role="heading" aria-level="1"></div>
+    <div id="grid"></div>
+  </main>
+
+  <div id="reward" hidden>
+    <img id="reward-img" alt="">
+    <div id="reward-track"><div id="reward-bar"></div></div>
+  </div>
+
+  <script type="module" src="js/game.js"></script>
+</body>
+</html>
