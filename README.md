@@ -12,7 +12,7 @@ Each round hides one word in a 10x10 grid. The word runs left to right or top to
 
 ## Playing on an iPad
 
-1. Open the game in Safari. To have the child's name included in the spoken phrases ("Well done, Sam!"), add it to the link: `https://damithc.github.io/word-search-mini/?name=Sam`.
+1. Open the game in Safari. To have the child's name included in the spoken phrases ("Well done, Sam!"), add it to the link: `https://damithc.github.io/word-search-mini/?name=Sam`, or set it later on the settings screen.
 2. Tap **Share**, then **Add to Home Screen**. Opening the game from the Home Screen icon hides the browser bars.
 3. Optional: turn on **Guided Access** (Settings > Accessibility > Guided Access) to keep the iPad in the game. Triple-click the side or home button to start it.
 
@@ -20,11 +20,11 @@ Portrait orientation gives the biggest letters.
 
 Phrases you have not recorded (see below) are said with the device's built-in voice. On some iPadOS versions, Safari can use a downloaded **Enhanced** or **Premium** voice (Settings > Accessibility > Spoken Content > Voices > English); on others it cannot, so recording your own voice is the reliable way to get natural speech.
 
-If the built-in voice does not pronounce the name well, spell it the way it sounds in the link (for example `?name=Reeveen`); the name is only spoken, never shown. The name is remembered on the device, and `?name=` with nothing after it clears it.
+The name is kept on the device only. It can be changed on the settings screen (see below), where **Hear it** plays it in the built-in voice; if it is not pronounced well, spell it the way it sounds (for example `Reeveen`), since it is only spoken, never shown. A name in the link is used only when it differs from the last link used, so the Home Screen icon's link doesn't undo a change made on the settings screen.
 
-## Recording your own voice
+## Settings and recording your own voice
 
-Press and hold the faint gear icon in the top-left corner for a moment (until the ring around it fills) to open the **Voice recordings** screen (or add `&setup` to the link in Safari). Record each word, the invitation and the praise phrases; each recording plays back so you can check it. Silence before and after is trimmed and volumes are evened out automatically.
+Press and hold the faint gear icon in the top-left corner for a moment (until the ring around it fills) to open the **Settings** screen (or add `&setup` to the link in Safari). There you can set the player's name and record the phrases in your own voice. Record each word, the invitation and the praise phrases; each recording plays back so you can check it. Silence before and after is trimmed and volumes are evened out automatically.
 
 - Recordings are stored on the device only and are never uploaded.
 - Record from inside the Home Screen app if that is how the game is played, as the Home Screen app and Safari keep separate storage.

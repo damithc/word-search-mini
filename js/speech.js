@@ -15,8 +15,10 @@ const MIN_GAP_MS = 1000;
 // Treat a sequence as finished after this long even if an end event never
 // arrives, which some browsers occasionally fail to send.
 const MAX_BUSY_MS = 10000;
-const SPEECH_TIMEOUT_MS = 6000;
 const CLIP_TIMEOUT_MS = 1000; // allowed beyond the clip's length
+// A generous guess at how long the built-in voice takes, used in case it
+// never reports finishing: this long per character, plus a second.
+const SPEECH_MS_PER_CHAR = 110;
 // Clips are brought to about the loudness of the built-in voice, judged by
 // their average level while speaking, without boosting quiet ones too much.
 const TARGET_LOUDNESS = 0.25;
@@ -163,9 +165,10 @@ export class Speaker {
   }
 
   // Lets speech and clips start later without a tap (e.g. a reminder).
-  // Must be called from a tap; only the first call does anything.
+  // Must be called from a tap that doesn't itself start speech; only the
+  // first call does anything.
   unlock() {
-    if (this.unlocked || !this.enabled) return;
+    if (this.unlocked || !this.enabled || this.sequence) return;
     this.unlocked = true;
     this.speak(' ', { volume: 0 });
     this.playUrl(SILENCE_URL).catch(() => {});
@@ -230,7 +233,7 @@ export class Speaker {
     }
     utterance.onend = next;
     utterance.onerror = next;
-    setTimeout(next, SPEECH_TIMEOUT_MS);
+    setTimeout(next, (text.length * SPEECH_MS_PER_CHAR) / this.rate + 1000);
   }
 
   playUrl(url) {
@@ -240,7 +243,10 @@ export class Speaker {
 
   stop() {
     this.sequence = null;
-    if ('speechSynthesis' in window) speechSynthesis.cancel();
+    // Cancelling only when needed: some browsers then lose the next "finished" event.
+    if ('speechSynthesis' in window && (speechSynthesis.speaking || speechSynthesis.pending)) {
+      speechSynthesis.cancel();
+    }
     this.player.onended = null;
     this.player.pause();
   }

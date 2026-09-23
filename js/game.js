@@ -11,6 +11,7 @@ const FADE_MS = 400;
 // A second tap on the same cell within this time is treated as an accidental double tap.
 const REPEAT_TAP_MS = 350;
 const NAME_KEY = 'playerName';
+const LINK_NAME_KEY = 'playerNameFromLink';
 const SETUP_HOLD_MS = 1500;
 // Longest the found word stays up waiting for the praise to finish.
 const PRAISE_TIMEOUT_MS = 10000;
@@ -30,7 +31,8 @@ const words = new ShuffleBag(WORDS);
 const pictures = new ShuffleBag(REWARD_PICTURES);
 const praises = new ShuffleBag(PRAISE_PHRASES);
 const speaker = new Speaker(SPEECH);
-const playerName = readPlayerName();
+let playerName = readPlayerName();
+let nameWhenSettingsOpened = '';
 
 let entry = null; // current item from WORDS
 let word = '';
@@ -45,20 +47,37 @@ let reminderTimer = null;
 let lastActivityAt = 0;
 const lastTapAt = new Map();
 
-// The name comes from the page link (?name=Sam), so it is not stored in the code.
-// It is remembered on the device in case the page is later opened without it,
-// and `?name=` with nothing after it forgets it.
-function readPlayerName() {
-  const param = new URLSearchParams(window.location.search).get('name');
-  const name = (param ?? '').replace(/[^\p{L}\p{M}' -]/gu, '').trim().slice(0, 30);
+function cleanName(text) {
+  return text.replace(/[^\p{L}\p{M}' -]/gu, '').trim().slice(0, 30);
+}
+
+// The player's name is kept on the device only, never in the code. It is set
+// on the settings screen, or by a link (?name=Sam) for first-time setup.
+function savePlayerName(text) {
+  const name = cleanName(text);
   try {
-    if (param === null) return localStorage.getItem(NAME_KEY) ?? '';
     if (name) localStorage.setItem(NAME_KEY, name);
     else localStorage.removeItem(NAME_KEY);
   } catch {
-    // Storage can be unavailable (e.g. private browsing); the link still works.
+    // Storage can be unavailable (e.g. private browsing); the name lasts until the page closes.
   }
   return name;
+}
+
+// A name in the link is used only when it differs from the last link seen,
+// so a Home Screen icon (whose link can't be changed) doesn't undo a name
+// changed on the settings screen.
+function readPlayerName() {
+  const param = new URLSearchParams(window.location.search).get('name');
+  try {
+    if (param !== null && param !== localStorage.getItem(LINK_NAME_KEY)) {
+      localStorage.setItem(LINK_NAME_KEY, param);
+      return savePlayerName(param);
+    }
+    return localStorage.getItem(NAME_KEY) ?? '';
+  } catch {
+    return cleanName(param ?? '');
+  }
 }
 
 function preloadNextPicture() {
@@ -155,8 +174,6 @@ function sayWordThen(phrase, options) {
 }
 
 function onRelease(event) {
-  // The first tap lets later speech (the reminder) start without one.
-  speaker.unlock();
   lastActivityAt = performance.now();
   if (sayOnRelease) {
     sayOnRelease = false;
@@ -165,10 +182,22 @@ function onRelease(event) {
     if (!praising) scheduleReward();
   } else if (event.type === 'pointerup' && event.target.closest('#target')) {
     sayWordThen({ template: INVITE_PHRASE, clip: INVITE_CLIP });
+  } else {
+    // Lets later speech (the reminder) start without a tap.
+    speaker.unlock();
   }
 }
 
-function showSetup() {
+// Opens the grown-up settings screen.
+function showSettings() {
+  nameWhenSettingsOpened = playerName;
+  document.getElementById('player-name').value = playerName;
+  showRecordings();
+  updateNameNote();
+}
+
+// Lists the phrases to record, using the current name.
+function showRecordings() {
   openSetup([
     {
       title: 'Words',
@@ -183,6 +212,26 @@ function showSetup() {
       items: PRAISE_PHRASES.map((t) => ({ id: praiseClip(t), label: fillPhrase(t, 'it') })),
     },
   ], speaker);
+}
+
+// Points out that recorded phrases still say the old name.
+function updateNameNote() {
+  const phraseClips = [INVITE_CLIP, ...PRAISE_PHRASES.map(praiseClip)];
+  const note = document.getElementById('name-note');
+  note.hidden = playerName === nameWhenSettingsOpened || !phraseClips.some((id) => speaker.hasClip(id));
+}
+
+function watchNameField() {
+  const field = document.getElementById('player-name');
+  field.addEventListener('input', () => {
+    playerName = savePlayerName(field.value);
+    showRecordings();
+    updateNameNote();
+  });
+  // Lets the name's pronunciation be checked with the built-in voice.
+  document.getElementById('hear-name').addEventListener('click', () => {
+    speaker.say([{ text: fillPhrase('Well done, {name}!', '') }], { interrupt: true });
+  });
 }
 
 // Press and hold the settings button to open the grown-up screen. A quick
@@ -200,7 +249,7 @@ function watchSettingsButton() {
     button.classList.add('holding');
     timer = setTimeout(() => {
       cancel();
-      showSetup();
+      showSettings();
     }, SETUP_HOLD_MS);
   });
   button.addEventListener('pointerup', cancel);
@@ -307,7 +356,9 @@ gridEl.addEventListener('pointerdown', onTap);
 document.addEventListener('pointerup', onRelease);
 document.addEventListener('pointercancel', onRelease);
 // Stop long-press menus and pinch zoom from getting in the way.
-document.addEventListener('contextmenu', (e) => e.preventDefault());
+document.addEventListener('contextmenu', (e) => {
+  if (!e.target.closest('input')) e.preventDefault();
+});
 document.addEventListener('gesturestart', (e) => e.preventDefault());
 window.addEventListener('resize', fitToScreen);
 
@@ -340,8 +391,9 @@ async function loadVoiceRecordings() {
 navigator.serviceWorker?.register('sw.js').catch(() => {});
 
 watchSettingsButton();
+watchNameField();
 loadVoiceRecordings().then(() => {
-  if (new URLSearchParams(window.location.search).has('setup')) showSetup();
+  if (new URLSearchParams(window.location.search).has('setup')) showSettings();
 });
 
 fitToScreen();

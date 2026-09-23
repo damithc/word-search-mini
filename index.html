@@ -42,16 +42,28 @@
     <header>
       <div>
         <p id="app-name">Word Search Mini <span id="app-version"></span></p>
-        <h1>Voice recordings</h1>
+        <h1>Settings</h1>
       </div>
       <div class="setup-actions">
         <button id="check-updates">Check for updates</button>
         <button id="setup-done">Done</button>
       </div>
     </header>
+    <p id="setup-message" hidden></p>
+
+    <h2>Player's name</h2>
+    <p>Said in phrases like "Well done, Sam!". It is only spoken, never shown, so if the
+      built-in voice says it wrongly, try spelling it the way it sounds.</p>
+    <div class="name-row">
+      <input id="player-name" type="text" maxlength="30" autocomplete="off" autocorrect="off"
+        autocapitalize="words" spellcheck="false" aria-label="Player's name">
+      <button id="hear-name">Hear it</button>
+    </div>
+    <p id="name-note" hidden>Your recorded phrases below still say the old name. Re-record them to match.</p>
+
+    <h2 class="section">Voice recordings</h2>
     <p>Record each phrase in your own voice. Recordings stay on this device only.
       Anything not recorded is said by the device's built-in voice.</p>
-    <p id="setup-message" hidden></p>
     <div id="setup-list"></div>
   </div>
 
