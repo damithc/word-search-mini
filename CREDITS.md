@@ -14,28 +14,33 @@ The pictures in `images/words/` and `images/rewards/` are photos from [Wikimedia
 | `lift.jpg` | [SLRP Woodlands.jpg](https://commons.wikimedia.org/wiki/File:SLRP_Woodlands.jpg) | CCL-DTL | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) |
 | `egg.jpg` | [Egg on white background.jpg](https://commons.wikimedia.org/wiki/File:Egg_on_white_background.jpg) | Paolo Neo | Public domain |
 | `milk.jpg` | [Glass of Milk (33657535532).jpg](https://commons.wikimedia.org/wiki/File:Glass_of_Milk_(33657535532).jpg) | NIAID | [CC BY 2.0](https://creativecommons.org/licenses/by/2.0) |
-| `cake.jpg` | [Birthday cake 3.jpg](https://commons.wikimedia.org/wiki/File:Birthday_cake_3.jpg) | Fuad2007AlZawad | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) |
+| `cake.jpg` | [Chocolate cake on white plate.jpg](https://commons.wikimedia.org/wiki/File:Chocolate_cake_on_white_plate.jpg) | Peulle | [CC0](http://creativecommons.org/publicdomain/zero/1.0/deed.en) |
 | `rice.jpg` | [A bowl of rice.jpg](https://commons.wikimedia.org/wiki/File:A_bowl_of_rice.jpg) | Douglas Perkins | [CC0](http://creativecommons.org/publicdomain/zero/1.0/deed.en) |
 | `apple.jpg` | [Red Apple.jpg](https://commons.wikimedia.org/wiki/File:Red_Apple.jpg) | Abhijit Tembhekar from Mumbai, India | [CC BY 2.0](https://creativecommons.org/licenses/by/2.0) |
-| `mango.jpg` | [Mangos - single and halved.jpg](https://commons.wikimedia.org/wiki/File:Mangos_-_single_and_halved.jpg) | Ivar Leidus | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) |
-| `bed.jpg` | [Balanced Modern Bedroom Design with Neutral Tones and Layered Lighting.jpg](https://commons.wikimedia.org/wiki/File:Balanced_Modern_Bedroom_Design_with_Neutral_Tones_and_Layered_Lighting.jpg) | SPL Interiors1 | [CC BY 4.0](https://creativecommons.org/licenses/by/4.0) |
-| `cup.jpg` | [Cup of tea isolated on white background - Petr Kratochvil (cropped).jpg](https://commons.wikimedia.org/wiki/File:Cup_of_tea_isolated_on_white_background_-_Petr_Kratochvil_(cropped).jpg) | Petr Kratochvil | [CC0](http://creativecommons.org/publicdomain/zero/1.0/deed.en) |
-| `fan.jpg` | [Floor fan.jpg](https://commons.wikimedia.org/wiki/File:Floor_fan.jpg) | Hans Olav Lien | [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0) |
-| `bag.jpg` | [School bag backpack.jpg](https://commons.wikimedia.org/wiki/File:School_bag_backpack.jpg) | Gamingforfun365 | [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0) |
-| `book.jpg` | [Ka'fluppernes første eventur.jpg](https://commons.wikimedia.org/wiki/File:Ka%27fluppernes_f%C3%B8rste_eventur.jpg) | Benny Bang Jensen | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) |
-| `shoe.jpg` | [Alexander McQueen Cupsole Sneaker in yellow suede.gif](https://commons.wikimedia.org/wiki/File:Alexander_McQueen_Cupsole_Sneaker_in_yellow_suede.gif) | Karldmartini | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) |
-| `ball.jpg` | [BeachBall.jpg](https://commons.wikimedia.org/wiki/File:BeachBall.jpg) | User Norvy on en.wikipedia | Copyrighted free use |
-| `spoon.jpg` | [Stainless Steel Soup Spoon.jpg](https://commons.wikimedia.org/wiki/File:Stainless_Steel_Soup_Spoon.jpg) | Paolomarco | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) |
+| `mango.jpg` | [Mango fruit Nam Dok Mai.jpg](https://commons.wikimedia.org/wiki/File:Mango_fruit_Nam_Dok_Mai.jpg) | Ivar Leidus | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) |
+| `bed.jpg` | [Cozy bedroom with a large bed and simple decor in a modern home.jpg](https://commons.wikimedia.org/wiki/File:Cozy_bedroom_with_a_large_bed_and_simple_decor_in_a_modern_home.jpg) | Shixart1985 | [CC BY 2.0](https://creativecommons.org/licenses/by/2.0) |
+| `table.jpg` | [Dining area with wooden table and bookshelves in a simple modern home setting.jpg](https://commons.wikimedia.org/wiki/File:Dining_area_with_wooden_table_and_bookshelves_in_a_simple_modern_home_setting.jpg) | Shixart1985 | [CC BY 2.0](https://creativecommons.org/licenses/by/2.0) |
 | `chair.jpg` | [Library Chair dakota jackson.jpg](https://commons.wikimedia.org/wiki/File:Library_Chair_dakota_jackson.jpg) | Dakota Jackson Inc. | [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0) |
+| `fan.jpg` | [Floor fan.jpg](https://commons.wikimedia.org/wiki/File:Floor_fan.jpg) | Hans Olav Lien | [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0) |
 | `clock.jpg` | [Wall clock quartz.jpg](https://commons.wikimedia.org/wiki/File:Wall_clock_quartz.jpg) | Sridhar Rao | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) |
+| `cup.jpg` | [Cup of tea isolated on white background - Petr Kratochvil (cropped).jpg](https://commons.wikimedia.org/wiki/File:Cup_of_tea_isolated_on_white_background_-_Petr_Kratochvil_(cropped).jpg) | Petr Kratochvil | [CC0](http://creativecommons.org/publicdomain/zero/1.0/deed.en) |
+| `plate.jpg` | [Decorative plate from Poland Bogucice Katowice Porcelana Śląska 1952-1993 01.jpg](https://commons.wikimedia.org/wiki/File:Decorative_plate_from_Poland_Bogucice_Katowice_Porcelana_%C5%9Al%C4%85ska_1952-1993_01.jpg) | Abraham | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) |
+| `spoon.jpg` | [Stainless Steel Soup Spoon.jpg](https://commons.wikimedia.org/wiki/File:Stainless_Steel_Soup_Spoon.jpg) | Paolomarco | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) |
+| `fork.jpg` | [Fork (all alone).jpg](https://commons.wikimedia.org/wiki/File:Fork_(all_alone).jpg) | GarethBaloney | [CC0](http://creativecommons.org/publicdomain/zero/1.0/deed.en) |
+| `book.jpg` | [Ka'fluppernes første eventur.jpg](https://commons.wikimedia.org/wiki/File:Ka%27fluppernes_f%C3%B8rste_eventur.jpg) | Benny Bang Jensen | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) |
+| `pen.jpg` | [Bic 4 couleurs on (quite) white background 1.jpg](https://commons.wikimedia.org/wiki/File:Bic_4_couleurs_on_(quite)_white_background_1.jpg) | Kvardek du | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) |
+| `bag.jpg` | [School bag backpack.jpg](https://commons.wikimedia.org/wiki/File:School_bag_backpack.jpg) | Gamingforfun365 | [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0) |
+| `ball.jpg` | [BeachBall.jpg](https://commons.wikimedia.org/wiki/File:BeachBall.jpg) | User Norvy on en.wikipedia | Copyrighted free use |
+| `shirt.jpg` | [Vintage 90's Lacoste Polo Shirt.jpg](https://commons.wikimedia.org/wiki/File:Vintage_90%27s_Lacoste_Polo_Shirt.jpg) | Quercus acuta | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) |
+| `sock.jpg` | [Villased sokid, STM 1998.jpg](https://commons.wikimedia.org/wiki/File:Villased_sokid,_STM_1998.jpg) | Venemaa; Petseri rajoon, Põrste küla; valmistaja: Helü, Linda; fotograaf: Tuul, Toomas | [CC0](http://creativecommons.org/publicdomain/zero/1.0/deed.en) |
+| `shoe.jpg` | [Alexander McQueen Cupsole Sneaker in yellow suede.gif](https://commons.wikimedia.org/wiki/File:Alexander_McQueen_Cupsole_Sneaker_in_yellow_suede.gif) | Karldmartini | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) |
 | `cat.jpg` | [Cat August 2010-3.jpg](https://commons.wikimedia.org/wiki/File:Cat_August_2010-3.jpg) | Alvesgaspar | [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0) |
 | `dog.jpg` | [Puppy Dog on White.jpg](https://commons.wikimedia.org/wiki/File:Puppy_Dog_on_White.jpg) | George Hodan | [CC0](http://creativecommons.org/publicdomain/zero/1.0/deed.en) |
 | `bird.jpg` | [Javan Myna Among Fallen Leaves.jpg](https://commons.wikimedia.org/wiki/File:Javan_Myna_Among_Fallen_Leaves.jpg) | Admzfir | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) |
-| `duck.jpg` | [Male mallard duck 2.jpg](https://commons.wikimedia.org/wiki/File:Male_mallard_duck_2.jpg) | Acarpentier | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0) |
 | `fish.jpg` | [Carassius auratus auratus (goldfish) 1.jpg](https://commons.wikimedia.org/wiki/File:Carassius_auratus_auratus_(goldfish)_1.jpg) | James St. John | [CC BY 2.0](https://creativecommons.org/licenses/by/2.0) |
-| `tree.jpg` | [Rain tree.jpg](https://commons.wikimedia.org/wiki/File:Rain_tree.jpg) | Mokkie | [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0) |
+| `tree.jpg` | [Lone tree in field - geograph.org.uk - 5525733.jpg](https://commons.wikimedia.org/wiki/File:Lone_tree_in_field_-_geograph.org.uk_-_5525733.jpg) | JThomas | [CC BY-SA 2.0](https://creativecommons.org/licenses/by-sa/2.0) |
 | `sun.jpg` | [Blue sky and sun.png](https://commons.wikimedia.org/wiki/File:Blue_sky_and_sun.png) | Matt R | [CC0](http://creativecommons.org/publicdomain/zero/1.0/deed.en) |
-| `moon.jpg` | [Full Moon Luc Viatour.jpg](https://commons.wikimedia.org/wiki/File:Full_Moon_Luc_Viatour.jpg) | Luc Viatour | [CC BY-SA 3.0](http://creativecommons.org/licenses/by-sa/3.0/) |
+| `moon.jpg` | [Big Moon in Daytime (9105997796).jpg](https://commons.wikimedia.org/wiki/File:Big_Moon_in_Daytime_(9105997796).jpg) | denebola2025 from North Ogden, UT, USA | [CC BY 2.0](https://creativecommons.org/licenses/by/2.0) |
 
 ## Reward pictures
 
