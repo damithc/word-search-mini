@@ -2,7 +2,7 @@
 
 A simple word search for young children, made for tablets.
 
-Each round hides one word in a 10x10 grid. The word runs left to right or top to bottom.
+Each round hides one word in a 10x10 grid. The word runs left to right or top to bottom. A photo of what the word means is shown next to it.
 
 - Tap a letter to choose it. Tap it again to unchoose it.
 - Letters that are not part of the word give a small wiggle and are not chosen.
@@ -18,7 +18,7 @@ Portrait orientation gives the biggest letters.
 
 ## Changing words, pictures or timing
 
-Edit [`js/config.js`](js/config.js). To use your own pictures, put them in `images/rewards/` and list them in `REWARD_PICTURES`.
+Edit [`js/config.js`](js/config.js). Each word in `WORDS` has a picture in `images/words/`. To use your own reward pictures, put them in `images/rewards/` and list them in `REWARD_PICTURES`.
 
 ## Running locally
 

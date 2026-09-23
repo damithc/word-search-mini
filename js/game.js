@@ -7,7 +7,9 @@ const FADE_MS = 400;
 // A second tap on the same cell within this time is treated as an accidental double tap.
 const REPEAT_TAP_MS = 350;
 
-const targetEl = document.getElementById('target');
+const wordPictureEl = document.getElementById('word-picture');
+const wordImg = document.getElementById('word-img');
+const lettersEl = document.getElementById('word-letters');
 const gridEl = document.getElementById('grid');
 const rewardEl = document.getElementById('reward');
 const rewardImg = document.getElementById('reward-img');
@@ -39,14 +41,17 @@ function makeTile(letter, className) {
 }
 
 function startRound() {
-  word = words.next();
+  const entry = words.next();
+  word = entry.word;
   const { grid, cells } = makePuzzle(word, GRID_SIZE, WORD_DIRECTIONS);
   wordIndexOfCell = new Map(cells.map(([r, c], k) => [r * GRID_SIZE + c, k]));
   selected = new Set();
   lastTapAt.clear();
 
-  targetEl.replaceChildren(...[...word].map((letter) => makeTile(letter, 'tile')));
-  targetEl.setAttribute('aria-label', `Find ${word}`);
+  wordPictureEl.hidden = !entry.picture;
+  if (entry.picture) wordImg.src = entry.picture;
+  lettersEl.replaceChildren(...[...word].map((letter) => makeTile(letter, 'tile')));
+  lettersEl.setAttribute('aria-label', `Find ${word}`);
 
   gridEl.replaceChildren(...grid.flat().map((letter, i) => {
     const cell = makeTile(letter, 'cell');
@@ -79,7 +84,7 @@ function onTap(event) {
     return;
   }
 
-  const tile = targetEl.children[wordIndexOfCell.get(index)];
+  const tile = lettersEl.children[wordIndexOfCell.get(index)];
   if (selected.has(index)) {
     selected.delete(index);
     cell.classList.remove('selected');
@@ -96,7 +101,7 @@ function onTap(event) {
 function celebrate() {
   locked = true;
   for (const index of selected) gridEl.children[index].classList.add('found');
-  for (const tile of targetEl.children) tile.classList.add('found');
+  for (const tile of lettersEl.children) tile.classList.add('found');
   setTimeout(showReward, FOUND_PAUSE_MS);
 }
 
@@ -115,22 +120,37 @@ function showReward() {
   }, FADE_MS + REWARD_MS);
 }
 
-// Size the grid and word so they fill the screen without scrolling.
+// Size the grid, word and picture so they fill the screen without scrolling.
+// All sizes are multiples of one grid cell.
 function fitToScreen() {
   const pad = 16;
   const gap = 24;
   const tileScale = 1.15; // word letters are a little bigger than grid letters
+  const pictureAspect = 1.7; // widest picture shape; wider ones are trimmed at the sides
+  const minPictureHeight = 1.5;
+  const maxPictureHeight = 3; // the picture grows into spare space up to this
+  const pictureGap = 0.4;
   const width = window.innerWidth - 2 * pad;
   const height = window.innerHeight - 2 * pad - gap;
-  const longest = Math.max(...WORDS.map((w) => w.length));
+  const longest = Math.max(...WORDS.map((w) => w.word.length));
+  const lettersWidth = longest * tileScale * 1.1;
   const cell = Math.floor(Math.min(
     width / GRID_SIZE,
-    height / (GRID_SIZE + tileScale),
-    width / (longest * tileScale * 1.1),
+    height / (GRID_SIZE + minPictureHeight),
+    width / (minPictureHeight * pictureAspect + pictureGap + lettersWidth),
   ));
-  document.documentElement.style.setProperty('--size', GRID_SIZE);
-  document.documentElement.style.setProperty('--cell', `${cell}px`);
-  document.documentElement.style.setProperty('--tile', `${Math.floor(cell * tileScale)}px`);
+  const pictureHeight = Math.min(
+    maxPictureHeight * cell,
+    height - GRID_SIZE * cell,
+    (width - (pictureGap + lettersWidth) * cell) / pictureAspect,
+  );
+  const style = document.documentElement.style;
+  style.setProperty('--size', GRID_SIZE);
+  style.setProperty('--cell', `${cell}px`);
+  style.setProperty('--tile', `${Math.floor(cell * tileScale)}px`);
+  style.setProperty('--picture-w', `${Math.floor(pictureHeight * pictureAspect)}px`);
+  style.setProperty('--picture-h', `${Math.floor(pictureHeight)}px`);
+  style.setProperty('--picture-gap', `${Math.floor(cell * pictureGap)}px`);
 }
 
 gridEl.addEventListener('pointerdown', onTap);
@@ -138,6 +158,9 @@ gridEl.addEventListener('pointerdown', onTap);
 document.addEventListener('contextmenu', (e) => e.preventDefault());
 document.addEventListener('gesturestart', (e) => e.preventDefault());
 window.addEventListener('resize', fitToScreen);
+
+// Word pictures are small, so load them all up front to have each ready when its word comes up.
+for (const { picture } of WORDS) if (picture) new Image().src = picture;
 
 fitToScreen();
 startRound();

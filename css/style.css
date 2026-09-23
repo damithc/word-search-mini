@@ -52,6 +52,28 @@ body {
 
 #target {
   display: flex;
+  align-items: center;
+  gap: var(--picture-gap);
+}
+
+#word-picture {
+  display: flex;
+  height: var(--picture-h);
+}
+
+#word-picture[hidden] {
+  display: none;
+}
+
+#word-img {
+  height: 100%;
+  max-width: var(--picture-w);
+  object-fit: cover;
+  border-radius: 12px;
+}
+
+#word-letters {
+  display: flex;
   gap: calc(var(--tile) * 0.1);
 }
 
