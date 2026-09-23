@@ -23,12 +23,12 @@ If the built-in voice does not pronounce the name well, spell it the way it soun
 
 ## Recording your own voice
 
-Press and hold the top-left corner of the game for 3 seconds to open the **Voice recordings** screen (or add `&setup` to the link in Safari). Record each word, the invitation and the praise phrases; each recording plays back so you can check it. Silence before and after is trimmed and volumes are evened out automatically.
+Press and hold the faint gear icon in the top-left corner for a moment (until the ring around it fills) to open the **Voice recordings** screen (or add `&setup` to the link in Safari). Record each word, the invitation and the praise phrases; each recording plays back so you can check it. Silence before and after is trimmed and volumes are evened out automatically.
 
 - Recordings are stored on the device only and are never uploaded.
 - Record from inside the Home Screen app if that is how the game is played, as the Home Screen app and Safari keep separate storage.
 - Recording needs the `https://` address (or `localhost`); it is not available over a plain `http://` network address.
-- A phrase is said in your voice only if both the word and the phrase after it are recorded; otherwise the built-in voice says the whole thing, so voices are never mixed. Once some praise phrases are recorded, only those are used.
+- Each recorded word or phrase is used in place of the built-in voice. Once some praise phrases are recorded, only those are used, so you don't need to record them all.
 
 ## Changing words, pictures or timing
 

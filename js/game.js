@@ -11,7 +11,7 @@ const FADE_MS = 400;
 // A second tap on the same cell within this time is treated as an accidental double tap.
 const REPEAT_TAP_MS = 350;
 const NAME_KEY = 'playerName';
-const SETUP_HOLD_MS = 3000;
+const SETUP_HOLD_MS = 1500;
 
 const targetEl = document.getElementById('target');
 const wordPictureEl = document.getElementById('word-picture');
@@ -108,11 +108,10 @@ const wordClip = (w) => `word:${w}`;
 const INVITE_CLIP = 'invite';
 const praiseClip = (template) => `praise:${template}`;
 
-// Once some praise has been recorded, only recorded praise is used, so the
-// recorded voice is heard whenever the word itself is recorded.
+// Once some praise has been recorded, only recorded praise is used.
 function nextPraise() {
   const recorded = PRAISE_PHRASES.filter((t) => speaker.hasClip(praiseClip(t)));
-  if (recorded.length === 0 || !speaker.hasClip(wordClip(word))) return praises.next();
+  if (recorded.length === 0) return praises.next();
   const choices = recorded.length > 1 ? recorded.filter((t) => t !== nextPraise.last) : recorded;
   nextPraise.last = choices[Math.floor(Math.random() * choices.length)];
   return nextPraise.last;
@@ -155,15 +154,27 @@ function showSetup() {
   ], speaker);
 }
 
-// Press and hold the top-left corner to open the grown-up screen.
-function watchSetupCorner() {
-  const corner = document.getElementById('setup-corner');
+// Press and hold the settings button to open the grown-up screen. A quick
+// tap does nothing, so it is not opened by accident.
+function watchSettingsButton() {
+  const button = document.getElementById('settings');
+  button.style.setProperty('--hold', `${SETUP_HOLD_MS}ms`);
   let timer = null;
-  const cancel = () => { clearTimeout(timer); timer = null; };
-  corner.addEventListener('pointerdown', () => { timer = setTimeout(showSetup, SETUP_HOLD_MS); });
-  corner.addEventListener('pointerup', cancel);
-  corner.addEventListener('pointercancel', cancel);
-  corner.addEventListener('pointerleave', cancel);
+  const cancel = () => {
+    clearTimeout(timer);
+    button.classList.remove('holding');
+  };
+  button.addEventListener('pointerdown', (event) => {
+    event.preventDefault();
+    button.classList.add('holding');
+    timer = setTimeout(() => {
+      cancel();
+      showSetup();
+    }, SETUP_HOLD_MS);
+  });
+  button.addEventListener('pointerup', cancel);
+  button.addEventListener('pointercancel', cancel);
+  button.addEventListener('pointerleave', cancel);
 }
 
 function onTap(event) {
@@ -265,13 +276,24 @@ for (const { picture } of WORDS) if (picture) new Image().src = picture;
 async function loadVoiceRecordings() {
   try {
     const recordings = await loadRecordings();
-    await Promise.all([...recordings].map(([id, { data }]) => speaker.setClip(id, data).catch(() => {})));
+    await Promise.all([...recordings].map(async ([id, recording]) => {
+      try {
+        if (recording.pcm) {
+          const pcm = new Int16Array(recording.pcm);
+          speaker.setClipFromSamples(id, Float32Array.from(pcm, (s) => s / 0x7fff), recording.sampleRate);
+        } else {
+          await speaker.setClipFromFile(id, recording.data);
+        }
+      } catch {
+        // An unreadable recording is skipped; the built-in voice says that phrase.
+      }
+    }));
   } catch {
     // Without stored recordings the built-in voice is used.
   }
 }
 
-watchSetupCorner();
+watchSettingsButton();
 loadVoiceRecordings().then(() => {
   if (new URLSearchParams(window.location.search).has('setup')) showSetup();
 });

@@ -1,26 +1,40 @@
 // The grown-up screen for recording the phrases the game says.
+//
+// Recordings are captured as raw samples rather than with MediaRecorder,
+// because iPad Safari cannot always play back its own compressed recordings.
 
 import { saveRecording, deleteRecording, keepRecordings } from './recordings.js';
 
 // Recording stops by itself after this long, in case Stop is forgotten.
 const MAX_RECORDING_MS = 8000;
+const MIN_RECORDING_S = 0.2;
 
 const setupEl = document.getElementById('setup');
 const listEl = document.getElementById('setup-list');
 const messageEl = document.getElementById('setup-message');
 const doneButton = document.getElementById('setup-done');
 
-let current = null; // { id, recorder, stream, timer } while recording
+let current = null; // the recording in progress
+let starting = false; // waiting for the microphone
 let speaker = null;
-
-function pickMimeType() {
-  const types = ['audio/mp4', 'audio/webm;codecs=opus', 'audio/webm'];
-  return types.find((t) => window.MediaRecorder?.isTypeSupported?.(t)) ?? '';
-}
 
 function showMessage(text) {
   messageEl.textContent = text;
   messageEl.hidden = !text;
+}
+
+function describe(error) {
+  return error?.name ? `${error.name}: ${error.message}` : String(error);
+}
+
+// Tells iPad Safari whether the microphone is in use, so sound comes out of
+// the speaker at normal volume afterwards.
+function setAudioSession(type) {
+  try {
+    if (navigator.audioSession) navigator.audioSession.type = type;
+  } catch {
+    // not supported
+  }
 }
 
 function rowFor(id) {
@@ -34,7 +48,7 @@ function updateRow(row) {
   row.classList.toggle('recording', recording);
   const record = row.querySelector('.record');
   record.textContent = recording ? 'Stop' : recorded ? 'Re-record' : 'Record';
-  record.disabled = Boolean(current) && !recording;
+  record.disabled = (Boolean(current) || starting) && !recording;
   row.querySelector('.play').disabled = !recorded || recording;
   row.querySelector('.delete').disabled = !recorded || recording;
 }
@@ -44,47 +58,74 @@ function updateAll() {
 }
 
 async function startRecording(id) {
-  if (!navigator.mediaDevices?.getUserMedia || !window.MediaRecorder) {
+  if (!navigator.mediaDevices?.getUserMedia) {
     showMessage('Recording needs the https:// address of this page.');
     return;
   }
-  let stream;
+  speaker.stop();
+  starting = true;
+  updateAll();
+  setAudioSession('play-and-record');
   try {
-    stream = await navigator.mediaDevices.getUserMedia({
+    const stream = await navigator.mediaDevices.getUserMedia({
       audio: { echoCancellation: true, noiseSuppression: true },
     });
-  } catch {
-    showMessage('Could not use the microphone. Check that this page is allowed to use it.');
-    return;
+    // Created after the microphone is on, so it runs at the microphone's sample rate.
+    const context = new (window.AudioContext || window.webkitAudioContext)();
+    context.resume().catch(() => {});
+    const source = context.createMediaStreamSource(stream);
+    const processor = context.createScriptProcessor(4096, 1, 1);
+    const chunks = [];
+    processor.onaudioprocess = (event) => chunks.push(new Float32Array(event.inputBuffer.getChannelData(0)));
+    source.connect(processor);
+    processor.connect(context.destination); // needed for processing to run; outputs silence
+    current = { id, stream, context, source, processor, chunks, timer: setTimeout(stopRecording, MAX_RECORDING_MS) };
+    showMessage('');
+  } catch (error) {
+    setAudioSession('playback');
+    showMessage(`Could not use the microphone (${describe(error)}). Check that this page is allowed to use it.`);
   }
-  showMessage('');
-  const mimeType = pickMimeType();
-  const recorder = new MediaRecorder(stream, mimeType ? { mimeType } : undefined);
-  const chunks = [];
-  recorder.ondataavailable = (event) => chunks.push(event.data);
-  recorder.onstop = () => finishRecording(id, new Blob(chunks, { type: recorder.mimeType }));
-  recorder.start();
-  current = { id, recorder, stream, timer: setTimeout(stopRecording, MAX_RECORDING_MS) };
+  starting = false;
   updateAll();
 }
 
+// Runs within the Stop tap, so the recording can be played straight back.
 function stopRecording() {
   if (!current) return;
-  clearTimeout(current.timer);
-  current.recorder.stop();
-  for (const track of current.stream.getTracks()) track.stop();
-}
-
-async function finishRecording(id, blob) {
+  const { id, stream, context, source, processor, chunks, timer } = current;
   current = null;
+  clearTimeout(timer);
+  processor.onaudioprocess = null;
+  source.disconnect();
+  processor.disconnect();
+  for (const track of stream.getTracks()) track.stop();
+  const { sampleRate, state } = context;
+  context.close().catch(() => {});
+  setAudioSession('playback');
+  speaker.resetAudio();
+
+  const samples = new Float32Array(chunks.reduce((n, c) => n + c.length, 0));
+  let at = 0;
+  for (const chunk of chunks) {
+    samples.set(chunk, at);
+    at += chunk.length;
+  }
+  if (samples.length < MIN_RECORDING_S * sampleRate) {
+    showMessage(`Nothing was recorded (audio was ${state}). Please try again.`);
+    updateAll();
+    return;
+  }
+
   try {
-    const data = await blob.arrayBuffer();
-    await speaker.setClip(id, data);
-    await saveRecording(id, { data, type: blob.type });
-    keepRecordings();
+    const trimmed = speaker.setClipFromSamples(id, samples, sampleRate);
     playClip(id);
-  } catch {
-    showMessage('That recording could not be saved. Please try again.');
+    const pcm = Int16Array.from(trimmed, (s) => Math.max(-1, Math.min(1, s)) * 0x7fff);
+    saveRecording(id, { pcm: pcm.buffer, sampleRate })
+      .then(keepRecordings)
+      .catch((error) => showMessage(`The recording could not be saved (${describe(error)}).`));
+    showMessage('');
+  } catch (error) {
+    showMessage(`The recording could not be used (${describe(error)}).`);
   }
   updateAll();
 }
@@ -99,17 +140,16 @@ async function onClick(event) {
   const row = event.target.closest('.setup-row');
   if (!button || !row) return;
   const { id } = row.dataset;
-  speaker.unlock();
 
   if (button.classList.contains('record')) {
     if (current?.id === id) stopRecording();
-    else if (!current) await startRecording(id);
+    else if (!current && !starting) await startRecording(id);
   } else if (button.classList.contains('play')) {
     playClip(id);
   } else if (button.classList.contains('delete')) {
     speaker.removeClip(id);
-    await deleteRecording(id);
     updateRow(row);
+    await deleteRecording(id).catch((error) => showMessage(`Could not delete (${describe(error)}).`));
   }
 }
 

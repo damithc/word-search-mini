@@ -1,5 +1,7 @@
 // Stores voice recordings on this device only (IndexedDB). They are never uploaded.
-// Each recording is kept as { data: ArrayBuffer, type: string }, keyed by clip id.
+// Each recording is kept as 16-bit samples, { pcm: ArrayBuffer, sampleRate },
+// keyed by clip id. Recordings from older versions are compressed audio files,
+// { data: ArrayBuffer, type }.
 
 const DB_NAME = 'word-search';
 const STORE = 'recordings';

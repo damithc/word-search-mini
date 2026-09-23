@@ -29,8 +29,14 @@
     <div id="reward-track"><div id="reward-bar"></div></div>
   </div>
 
-  <!-- Press and hold for 3 seconds to open the grown-up screen -->
-  <div id="setup-corner"></div>
+  <!-- Press and hold to open the grown-up screen; the ring fills while holding -->
+  <button id="settings" aria-label="Settings (press and hold)">
+    <svg class="ring" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="21"/></svg>
+    <svg class="gear" viewBox="0 0 24 24" aria-hidden="true">
+      <g fill="currentColor"><circle cx="12" cy="12" r="6.6"/><rect x="10.4" y="1.2" width="3.2" height="5" rx="1" transform="rotate(0 12 12)"/><rect x="10.4" y="1.2" width="3.2" height="5" rx="1" transform="rotate(45 12 12)"/><rect x="10.4" y="1.2" width="3.2" height="5" rx="1" transform="rotate(90 12 12)"/><rect x="10.4" y="1.2" width="3.2" height="5" rx="1" transform="rotate(135 12 12)"/><rect x="10.4" y="1.2" width="3.2" height="5" rx="1" transform="rotate(180 12 12)"/><rect x="10.4" y="1.2" width="3.2" height="5" rx="1" transform="rotate(225 12 12)"/><rect x="10.4" y="1.2" width="3.2" height="5" rx="1" transform="rotate(270 12 12)"/><rect x="10.4" y="1.2" width="3.2" height="5" rx="1" transform="rotate(315 12 12)"/></g>
+      <circle cx="12" cy="12" r="2.8" fill="var(--bg)"/>
+    </svg>
+  </button>
 
   <div id="setup" hidden>
     <header>
