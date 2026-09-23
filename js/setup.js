@@ -5,6 +5,7 @@
 // Web Audio is used only to capture them.
 
 import { saveRecording, deleteRecording, keepRecordings } from './recordings.js';
+import { VERSION } from './version.js';
 
 // Recording stops by itself after this long, in case Stop is forgotten.
 const MAX_RECORDING_MS = 8000;
@@ -177,6 +178,7 @@ export function openSetup(sections, theSpeaker) {
   setupEl.hidden = false;
 }
 
+document.getElementById('app-version').textContent = `v${VERSION}`;
 listEl.addEventListener('click', onClick);
 doneButton.addEventListener('click', () => {
   stopRecording();

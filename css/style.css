@@ -290,6 +290,18 @@ body {
   font-size: 28px;
 }
 
+#app-name {
+  margin: 8px 0 0;
+  font-weight: 600;
+}
+
+#app-version {
+  margin-left: 4px;
+  color: #9a917f;
+  font-size: 14px;
+  font-weight: 400;
+}
+
 #setup h2 {
   margin: 28px 0 8px;
   font-size: 20px;
