@@ -31,7 +31,7 @@ Press and hold the faint gear icon in the top-left corner for a moment (until th
 - Recording needs the `https://` address (or `localhost`); it is not available over a plain `http://` network address.
 - Each recorded word or phrase is used in place of the built-in voice. Once some praise phrases are recorded, only those are used, so you don't need to record them all.
 
-The version number is shown at the top of that screen, next to the app name. After a change is deployed, the iPad can take up to 10 minutes to pick it up; pull down to refresh, or close and reopen the Home Screen app.
+The version number is shown at the top of that screen, next to the app name. The game fetches the latest version whenever it is opened while online (and still works offline); **Check for updates** on that screen reloads it if a newer version is available.
 
 ## Changing words, pictures or timing
 

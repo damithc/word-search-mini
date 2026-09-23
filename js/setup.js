@@ -178,7 +178,26 @@ export function openSetup(sections, theSpeaker) {
   setupEl.hidden = false;
 }
 
+// Reloads the game if a newer version has been deployed.
+async function checkForUpdates() {
+  showMessage('Checking for updates...');
+  try {
+    const response = await fetch('js/version.js', { cache: 'no-store' });
+    const latest = (await response.text()).match(/VERSION = '([^']+)'/)?.[1];
+    if (!latest) throw new Error('version not found');
+    if (latest === VERSION) {
+      showMessage(`This is the latest version (v${VERSION}).`);
+    } else {
+      showMessage(`Updating to v${latest}...`);
+      window.location.reload();
+    }
+  } catch (error) {
+    showMessage(`Could not check for updates (${describe(error)}). Is the device online?`);
+  }
+}
+
 document.getElementById('app-version').textContent = `v${VERSION}`;
+document.getElementById('check-updates').addEventListener('click', checkForUpdates);
 listEl.addEventListener('click', onClick);
 doneButton.addEventListener('click', () => {
   stopRecording();

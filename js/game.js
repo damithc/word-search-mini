@@ -311,8 +311,10 @@ document.addEventListener('contextmenu', (e) => e.preventDefault());
 document.addEventListener('gesturestart', (e) => e.preventDefault());
 window.addEventListener('resize', fitToScreen);
 
-// Word pictures are small, so load them all up front to have each ready when its word comes up.
+// Load all pictures up front, so each is ready when needed and saved for
+// playing offline (see sw.js).
 for (const { picture } of WORDS) if (picture) new Image().src = picture;
+for (const picture of REWARD_PICTURES) new Image().src = picture;
 
 async function loadVoiceRecordings() {
   try {
@@ -333,6 +335,9 @@ async function loadVoiceRecordings() {
     // Without stored recordings the built-in voice is used.
   }
 }
+
+// Keeps the game up to date and playable offline (see sw.js).
+navigator.serviceWorker?.register('sw.js').catch(() => {});
 
 watchSettingsButton();
 loadVoiceRecordings().then(() => {
