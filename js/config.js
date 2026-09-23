@@ -47,8 +47,13 @@ export const PRAISE_PHRASES = [
 export const REWARD_PICTURES = Array.from({ length: 10 },
   (_, i) => `images/rewards/train-${String(i + 1).padStart(2, '0')}.jpg`);
 
-// How long the found word stays highlighted before the picture appears.
+// The found word stays highlighted while the praise is said, and at least
+// this long, before the picture appears.
 export const FOUND_PAUSE_MS = 1200;
 
 // How long the picture stays on screen.
 export const REWARD_MS = 4000;
+
+// If the word has not been found this long after it appears, the word and
+// the invitation are said once more as a reminder. null turns this off.
+export const REMINDER_MS = 60000;

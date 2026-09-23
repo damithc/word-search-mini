@@ -7,7 +7,8 @@ Each round hides one word in a 10x10 grid. The word runs left to right or top to
 - Tap a letter to choose it. Tap it again to unchoose it.
 - Letters that are not part of the word give a small wiggle and are not chosen.
 - Tap the photo or the word at the top to hear the word, followed by "Can you find ...?".
-- When the whole word is found, it turns green, the word is said aloud with some praise ("Well done!"), and a picture is shown for a few seconds. Then a new word starts.
+- If the word has not been found after a minute, the word and "Can you find ...?" are said once more as a reminder.
+- When the whole word is found, it turns green and the word is said aloud with some praise ("Well done!"). Once the praise ends, a picture is shown for a few seconds. Then a new word starts.
 
 ## Playing on an iPad
 

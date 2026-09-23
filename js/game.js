@@ -1,6 +1,6 @@
 import {
   GRID_SIZE, WORD_DIRECTIONS, WORDS, SPEECH, INVITE_PHRASE, PRAISE_PHRASES,
-  REWARD_PICTURES, FOUND_PAUSE_MS, REWARD_MS,
+  REWARD_PICTURES, FOUND_PAUSE_MS, REWARD_MS, REMINDER_MS,
 } from './config.js';
 import { makePuzzle, ShuffleBag } from './puzzle.js';
 import { Speaker } from './speech.js';
@@ -12,6 +12,10 @@ const FADE_MS = 400;
 const REPEAT_TAP_MS = 350;
 const NAME_KEY = 'playerName';
 const SETUP_HOLD_MS = 1500;
+// Longest the found word stays up waiting for the praise to finish.
+const PRAISE_TIMEOUT_MS = 10000;
+// A reminder waits until the child has not tapped for this long.
+const REMINDER_IDLE_MS = 3000;
 
 const targetEl = document.getElementById('target');
 const wordPictureEl = document.getElementById('word-picture');
@@ -35,6 +39,10 @@ let selected = new Set(); // cell indices
 let locked = false;
 let nextPicture = null;
 let sayOnRelease = false; // praise when the finger that found the word lifts
+let foundAt = 0;
+let rewardTimer = null;
+let reminderTimer = null;
+let lastActivityAt = 0;
 const lastTapAt = new Map();
 
 // The name comes from the page link (?name=Sam), so it is not stored in the code.
@@ -89,6 +97,22 @@ function startRound() {
 
   preloadNextPicture();
   locked = false;
+  scheduleReminder(SPEECH.enabled ? REMINDER_MS : null);
+}
+
+// Says the word and the invitation once if the word is not found in time,
+// waiting for a pause in tapping and for any speech to finish.
+function scheduleReminder(delay) {
+  clearTimeout(reminderTimer);
+  if (delay === null) return;
+  reminderTimer = setTimeout(() => {
+    if (locked) return;
+    const idleFor = performance.now() - lastActivityAt;
+    const setupOpen = !document.getElementById('setup').hidden;
+    if (idleFor < REMINDER_IDLE_MS || setupOpen || !sayWordThen({ template: INVITE_PHRASE, clip: INVITE_CLIP })) {
+      scheduleReminder(Math.max(1000, REMINDER_IDLE_MS - idleFor));
+    }
+  }, delay);
 }
 
 function restartAnimation(el, className) {
@@ -118,20 +142,27 @@ function nextPraise() {
 }
 
 // Say the word followed by a phrase, e.g. "cat. Can you find cat, Sam?"
+// Returns whether it is being said.
 function sayWordThen(phrase, options) {
   const parts = [
     // Lower case, so short words are said as words rather than spelled out.
     { text: word.toLowerCase(), clip: wordClip(word) },
     { text: fillPhrase(phrase.template, word.toLowerCase()), clip: phrase.clip },
   ];
-  if (speaker.say(parts, options)) restartAnimation(targetEl, 'speaking');
+  if (!speaker.say(parts, options)) return false;
+  restartAnimation(targetEl, 'speaking');
+  return true;
 }
 
 function onRelease(event) {
+  // The first tap lets later speech (the reminder) start without one.
+  speaker.unlock();
+  lastActivityAt = performance.now();
   if (sayOnRelease) {
     sayOnRelease = false;
     const template = nextPraise();
-    sayWordThen({ template, clip: praiseClip(template) }, { interrupt: true });
+    const praising = sayWordThen({ template, clip: praiseClip(template) }, { interrupt: true, onDone: scheduleReward });
+    if (!praising) scheduleReward();
   } else if (event.type === 'pointerup' && event.target.closest('#target')) {
     sayWordThen({ template: INVITE_PHRASE, clip: INVITE_CLIP });
   }
@@ -209,9 +240,19 @@ function onTap(event) {
 function celebrate() {
   locked = true;
   sayOnRelease = true;
+  foundAt = performance.now();
+  clearTimeout(reminderTimer);
   for (const index of selected) gridEl.children[index].classList.add('found');
   for (const tile of lettersEl.children) tile.classList.add('found');
-  setTimeout(showReward, FOUND_PAUSE_MS);
+  // Normally the praise finishing brings the picture; this is in case it doesn't.
+  clearTimeout(rewardTimer);
+  rewardTimer = setTimeout(showReward, SPEECH.enabled ? PRAISE_TIMEOUT_MS : FOUND_PAUSE_MS);
+}
+
+// Shows the picture once the found word has been up for at least FOUND_PAUSE_MS.
+function scheduleReward() {
+  clearTimeout(rewardTimer);
+  rewardTimer = setTimeout(showReward, Math.max(0, FOUND_PAUSE_MS - (performance.now() - foundAt)));
 }
 
 function showReward() {

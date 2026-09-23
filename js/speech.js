@@ -17,9 +17,12 @@ const MIN_GAP_MS = 1000;
 const MAX_BUSY_MS = 10000;
 const SPEECH_TIMEOUT_MS = 6000;
 const CLIP_TIMEOUT_MS = 1000; // allowed beyond the clip's length
-// Clips are made about equally loud, without boosting quiet ones too much.
-const TARGET_PEAK = 0.8;
-const MAX_GAIN = 6;
+// Clips are brought to about the loudness of the built-in voice, judged by
+// their average level while speaking, without boosting quiet ones too much.
+const TARGET_LOUDNESS = 0.25;
+const MAX_GAIN = 8;
+// Above this level, peaks are gently squashed instead of distorting.
+const LIMIT_FROM = 0.7;
 
 const NOVELTY_VOICES = new RegExp('^(Albert|Bad News|Bahh|Bells|Boing|Bubbles|Cellos|Good News|Jester|'
   + 'Organ|Superstar|Trinoids|Whisper|Wobble|Zarvox|Fred|Junior|Kathy|Ralph|'
@@ -40,11 +43,31 @@ function trim(samples, sampleRate) {
   return samples.subarray(start, end);
 }
 
+// The average level of the spoken parts (20 ms stretches clearly above the
+// quietest), so pauses between words don't make a clip seem quieter.
+function speakingLevel(samples, sampleRate) {
+  const size = Math.max(1, Math.round(0.02 * sampleRate));
+  const levels = [];
+  for (let at = 0; at < samples.length; at += size) {
+    const frame = samples.subarray(at, at + size);
+    levels.push(Math.sqrt(frame.reduce((sum, s) => sum + s * s, 0) / frame.length));
+  }
+  const loudest = Math.max(...levels);
+  const spoken = levels.filter((level) => level > loudest * 0.1);
+  return Math.sqrt(spoken.reduce((sum, level) => sum + level * level, 0) / spoken.length);
+}
+
+function limit(s) {
+  const size = Math.abs(s);
+  if (size <= LIMIT_FROM) return s;
+  const room = 1 - LIMIT_FROM;
+  return Math.sign(s) * (LIMIT_FROM + room * Math.tanh((size - LIMIT_FROM) / room));
+}
+
 // Makes a 16-bit mono WAV file, brought to a standard loudness.
 function toWav(samples, sampleRate) {
-  let peak = 0;
-  for (const s of samples) peak = Math.max(peak, Math.abs(s));
-  const gain = peak > 0 ? Math.min(TARGET_PEAK / peak, MAX_GAIN) : 1;
+  const level = samples.length > 0 ? speakingLevel(samples, sampleRate) : 0;
+  const gain = level > 0 ? Math.min(TARGET_LOUDNESS / level, MAX_GAIN) : 1;
   const view = new DataView(new ArrayBuffer(44 + samples.length * 2));
   const text = (at, s) => [...s].forEach((c, i) => view.setUint8(at + i, c.charCodeAt(0)));
   text(0, 'RIFF');
@@ -59,7 +82,7 @@ function toWav(samples, sampleRate) {
   view.setUint16(34, 16, true); // bits per sample
   text(36, 'data');
   view.setUint32(40, samples.length * 2, true);
-  samples.forEach((s, i) => view.setInt16(44 + i * 2, Math.max(-1, Math.min(1, s * gain)) * 0x7fff, true));
+  samples.forEach((s, i) => view.setInt16(44 + i * 2, limit(s * gain) * 0x7fff, true));
   return new Blob([view], { type: 'audio/wav' });
 }
 
@@ -91,6 +114,7 @@ export class Speaker {
     this.lastSaidAt = -Infinity;
     this.voice = null;
     this.onError = null; // called with a description when a clip fails to play
+    this.unlocked = false;
 
     if (this.enabled && 'speechSynthesis' in window) {
       this.pickVoice();
@@ -138,6 +162,15 @@ export class Speaker {
     return this.clips.has(id);
   }
 
+  // Lets speech and clips start later without a tap (e.g. a reminder).
+  // Must be called from a tap; only the first call does anything.
+  unlock() {
+    if (this.unlocked || !this.enabled) return;
+    this.unlocked = true;
+    this.speak(' ', { volume: 0 });
+    this.playUrl(SILENCE_URL).catch(() => {});
+  }
+
   isBusy() {
     const elapsed = performance.now() - this.lastSaidAt;
     return elapsed < MIN_GAP_MS || (this.sequence !== null && elapsed < MAX_BUSY_MS);
@@ -145,8 +178,9 @@ export class Speaker {
 
   // Says the parts in order. Each part is { text, clip? } where clip is a clip id.
   // Unless `interrupt` is set, does nothing while something is still being said.
+  // onDone is called a short pause after the last part, unless it is stopped.
   // Returns whether anything is being said.
-  say(parts, { interrupt = false } = {}) {
+  say(parts, { interrupt = false, onDone = null } = {}) {
     if (!this.enabled || (!interrupt && this.isBusy())) return false;
     this.stop();
     this.lastSaidAt = performance.now();
@@ -156,7 +190,7 @@ export class Speaker {
     if (!steps[0].clip && steps.some((step) => step.clip)) this.playUrl(SILENCE_URL).catch(() => {});
     if (steps[0].clip && steps.some((step) => !step.clip)) this.speak(' ', { volume: 0 });
 
-    const sequence = {};
+    const sequence = { onDone };
     this.sequence = sequence;
     this.playFrom(steps, 0, sequence);
     return true;
@@ -166,6 +200,7 @@ export class Speaker {
     if (this.sequence !== sequence) return; // stopped or replaced
     if (index >= steps.length) {
       this.sequence = null;
+      sequence.onDone?.();
       return;
     }
     const step = steps[index];
