@@ -6,12 +6,12 @@ Each round hides one word in a 10x10 grid. The word runs left to right or top to
 
 - Tap a letter to choose it. Tap it again to unchoose it.
 - Letters that are not part of the word give a small wiggle and are not chosen.
-- Tap the photo or the word at the top to hear the word said aloud.
-- When the whole word is found, it turns green and is said aloud, then a picture is shown for a few seconds. Then a new word starts.
+- Tap the photo or the word at the top to hear the word, followed by "Can you find ...?".
+- When the whole word is found, it turns green, the word is said aloud with some praise ("Well done!"), and a picture is shown for a few seconds. Then a new word starts.
 
 ## Playing on an iPad
 
-1. Open the game in Safari.
+1. Open the game in Safari. To have the child's name included in the spoken phrases ("Well done, Sam!"), add it to the link: `https://damithc.github.io/word-search-mini/?name=Sam`.
 2. Tap **Share**, then **Add to Home Screen**. Opening the game from the Home Screen icon hides the browser bars.
 3. Optional: turn on **Guided Access** (Settings > Accessibility > Guided Access) to keep the iPad in the game. Triple-click the side or home button to start it.
 
@@ -19,9 +19,11 @@ Portrait orientation gives the biggest letters.
 
 The words are said with the iPad's built-in voice. For a clearer, more natural voice, download an **Enhanced** or **Premium** American English voice in Settings > Accessibility > Spoken Content > Voices > English. The game uses it automatically.
 
+If the name is not pronounced well, spell it the way it sounds in the link (for example `?name=Reeveen`); the name is only spoken, never shown. The name is remembered on the device, and `?name=` with nothing after it clears it.
+
 ## Changing words, pictures or timing
 
-Edit [`js/config.js`](js/config.js). Each word in `WORDS` has a picture in `images/words/`. To use your own recording of a word instead of the built-in voice, add the audio file to the repo and give the word a `sound` (for example `sound: 'sounds/cat.m4a'`). Speech settings are in `SPEECH`. To use your own reward pictures, put them in `images/rewards/` and list them in `REWARD_PICTURES`.
+Edit [`js/config.js`](js/config.js). Each word in `WORDS` has a picture in `images/words/`. To use your own recording of a word instead of the built-in voice, add the audio file to the repo and give the word a `sound` (for example `sound: 'sounds/cat.m4a'`). Speech settings are in `SPEECH`, and the spoken phrases are in `INVITE_PHRASE` and `PRAISE_PHRASES`. To use your own reward pictures, put them in `images/rewards/` and list them in `REWARD_PICTURES`.
 
 ## Running locally
 

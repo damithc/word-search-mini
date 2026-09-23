@@ -1,5 +1,6 @@
 import {
-  GRID_SIZE, WORD_DIRECTIONS, WORDS, SPEECH, REWARD_PICTURES, FOUND_PAUSE_MS, REWARD_MS,
+  GRID_SIZE, WORD_DIRECTIONS, WORDS, SPEECH, INVITE_PHRASE, PRAISE_PHRASES,
+  REWARD_PICTURES, FOUND_PAUSE_MS, REWARD_MS,
 } from './config.js';
 import { makePuzzle, ShuffleBag } from './puzzle.js';
 import { Speaker } from './speech.js';
@@ -7,6 +8,7 @@ import { Speaker } from './speech.js';
 const FADE_MS = 400;
 // A second tap on the same cell within this time is treated as an accidental double tap.
 const REPEAT_TAP_MS = 350;
+const NAME_KEY = 'playerName';
 
 const targetEl = document.getElementById('target');
 const wordPictureEl = document.getElementById('word-picture');
@@ -19,7 +21,9 @@ const rewardBar = document.getElementById('reward-bar');
 
 const words = new ShuffleBag(WORDS);
 const pictures = new ShuffleBag(REWARD_PICTURES);
+const praises = new ShuffleBag(PRAISE_PHRASES);
 const speaker = new Speaker(SPEECH);
+const playerName = readPlayerName();
 
 let entry = null; // current item from WORDS
 let word = '';
@@ -27,8 +31,24 @@ let wordIndexOfCell = new Map(); // cell index -> position in word
 let selected = new Set(); // cell indices
 let locked = false;
 let nextPicture = null;
-let sayOnRelease = false; // say the word when the finger that found it lifts
+let sayOnRelease = false; // praise when the finger that found the word lifts
 const lastTapAt = new Map();
+
+// The name comes from the page link (?name=Sam), so it is not stored in the code.
+// It is remembered on the device in case the page is later opened without it,
+// and `?name=` with nothing after it forgets it.
+function readPlayerName() {
+  const param = new URLSearchParams(window.location.search).get('name');
+  const name = (param ?? '').replace(/[^\p{L}\p{M}' -]/gu, '').trim().slice(0, 30);
+  try {
+    if (param === null) return localStorage.getItem(NAME_KEY) ?? '';
+    if (name) localStorage.setItem(NAME_KEY, name);
+    else localStorage.removeItem(NAME_KEY);
+  } catch {
+    // Storage can be unavailable (e.g. private browsing); the link still works.
+  }
+  return name;
+}
 
 function preloadNextPicture() {
   nextPicture = pictures.next();
@@ -74,16 +94,25 @@ function restartAnimation(el, className) {
   el.classList.add(className);
 }
 
-function sayWord() {
-  if (speaker.say(word, entry.sound)) restartAnimation(targetEl, 'speaking');
+function fillPhrase(template) {
+  // With a recording of the word, avoid mixing the built-in voice saying it too.
+  const text = template.replaceAll('{word}', entry.sound ? 'it' : word.toLowerCase());
+  return playerName ? text.replaceAll('{name}', playerName) : text.replace(/,?\s*\{name\}/g, '');
+}
+
+// Say the word followed by a phrase, e.g. "cat. Can you find cat, Sam?"
+function sayWordThen(template, options) {
+  // Lower case, so short words are said as words rather than spelled out.
+  const parts = [{ text: word.toLowerCase(), recording: entry.sound }, { text: fillPhrase(template) }];
+  if (speaker.say(parts, options)) restartAnimation(targetEl, 'speaking');
 }
 
 function onRelease(event) {
   if (sayOnRelease) {
     sayOnRelease = false;
-    sayWord();
+    sayWordThen(praises.next(), { interrupt: true });
   } else if (event.type === 'pointerup' && event.target.closest('#target')) {
-    sayWord();
+    sayWordThen(INVITE_PHRASE);
   }
 }
 

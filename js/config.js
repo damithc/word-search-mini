@@ -26,6 +26,24 @@ export const WORDS = [
 // `lang` picks the built-in voice's accent; `rate` below 1 speaks more slowly.
 export const SPEECH = { enabled: true, lang: 'en-US', rate: 0.8 };
 
+// Phrases said after the word. {word} is the word; {name} is the player's name,
+// taken from the page link (e.g. ?name=Sam). Without a name, ", {name}" is left out.
+export const INVITE_PHRASE = 'Can you find {word}, {name}?';
+export const PRAISE_PHRASES = [
+  'Well done, {name}!',
+  'Good job, {name}!',
+  'You found it, {name}!',
+  'Great finding, {name}!',
+  'Awesome, {name}!',
+  'Brilliant, {name}!',
+  'Super, {name}!',
+  'Fantastic, {name}!',
+  'Hooray! You did it, {name}!',
+  'Way to go, {name}!',
+  'Amazing, {name}!',
+  'Great work, {name}!',
+];
+
 // Pictures shown after a word is found.
 export const REWARD_PICTURES = Array.from({ length: 10 },
   (_, i) => `images/rewards/train-${String(i + 1).padStart(2, '0')}.jpg`);

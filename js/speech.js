@@ -1,13 +1,16 @@
-// Says words aloud, using a recording when one is given and the device's
-// built-in voice otherwise.
+// Says short sequences of phrases aloud, using a recording for a phrase when
+// one is given and the device's built-in voice otherwise.
 //
 // iPad Safari only plays sound in direct response to a tap, and counts the
 // finger lifting (not landing) as the tap. So call say() from a pointerup
 // handler, not from pointerdown or a timer.
 
 // Ignore requests that come sooner than this after the last one, so repeated
-// taps don't keep restarting the word.
+// taps don't keep restarting the speech.
 const MIN_GAP_MS = 1000;
+// Treat speech as finished after this long even if the device still reports
+// it as speaking, which some browsers occasionally get stuck on.
+const MAX_BUSY_MS = 8000;
 
 const NOVELTY_VOICES = new RegExp('^(Albert|Bad News|Bahh|Bells|Boing|Bubbles|Cellos|Good News|Jester|'
   + 'Organ|Superstar|Trinoids|Whisper|Wobble|Zarvox|Fred|Junior|Kathy|Ralph|'
@@ -20,6 +23,7 @@ export class Speaker {
     this.rate = rate;
     this.recordings = new Map(); // url -> Audio, or null if it failed to load
     this.lastSaidAt = -Infinity;
+    this.currentAudio = null;
     this.voice = null;
 
     if (this.enabled && 'speechSynthesis' in window) {
@@ -49,29 +53,61 @@ export class Speaker {
     this.recordings.set(url, audio);
   }
 
-  // Returns whether the word is being said.
-  say(text, recordingUrl) {
-    if (!this.enabled) return false;
-    const now = performance.now();
-    if (now - this.lastSaidAt < MIN_GAP_MS) return false;
-    this.lastSaidAt = now;
+  isBusy() {
+    const elapsed = performance.now() - this.lastSaidAt;
+    if (elapsed < MIN_GAP_MS) return true;
+    if (elapsed > MAX_BUSY_MS) return false;
+    return Boolean(this.currentAudio) || ('speechSynthesis' in window && speechSynthesis.speaking);
+  }
 
-    this.preload(recordingUrl);
-    const audio = recordingUrl && this.recordings.get(recordingUrl);
-    if (audio) {
-      audio.currentTime = 0;
-      audio.play().catch(() => this.speak(text));
-    } else {
-      this.speak(text);
-    }
+  // Says the parts in order. Each part is { text, recording? }.
+  // Unless `interrupt` is set, does nothing while something is still being said.
+  // Returns whether anything is being said.
+  say(parts, { interrupt = false } = {}) {
+    if (!this.enabled || (!interrupt && this.isBusy())) return false;
+    this.stop();
+    this.lastSaidAt = performance.now();
+    this.sayInOrder(parts);
     return true;
+  }
+
+  stop() {
+    if ('speechSynthesis' in window) speechSynthesis.cancel();
+    if (this.currentAudio) {
+      this.currentAudio.onended = null;
+      this.currentAudio.pause();
+      this.currentAudio = null;
+    }
+  }
+
+  // Built-in voice parts are queued straight away; a recording has to finish
+  // before the parts after it are started.
+  sayInOrder(parts) {
+    if (parts.length === 0) return;
+    const [{ text, recording }, ...rest] = parts;
+    this.preload(recording);
+    const audio = recording && this.recordings.get(recording);
+    if (!audio) {
+      this.speak(text);
+      this.sayInOrder(rest);
+      return;
+    }
+    this.currentAudio = audio;
+    audio.currentTime = 0;
+    audio.onended = () => {
+      this.currentAudio = null;
+      this.sayInOrder(rest);
+    };
+    audio.play().catch(() => {
+      this.currentAudio = null;
+      this.speak(text);
+      this.sayInOrder(rest);
+    });
   }
 
   speak(text) {
     if (!('speechSynthesis' in window)) return;
-    speechSynthesis.cancel();
-    // Lower case, so short words are said as words rather than spelled out.
-    const utterance = new SpeechSynthesisUtterance(text.toLowerCase());
+    const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = this.lang;
     utterance.rate = this.rate;
     if (this.voice) utterance.voice = this.voice;
