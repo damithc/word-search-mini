@@ -9,6 +9,7 @@ Each round hides one word in a 10x10 grid. The word runs left to right or top to
 - Tap the photo or the word at the top to hear the word, followed by "Can you find ...?".
 - If the word has not been found after a minute, the word and "Can you find ...?" are said once more as a reminder.
 - When the whole word is found, it turns green and the word is said aloud with some praise ("Well done!"). Once the praise ends, a picture is shown for a few seconds. Then a new word starts.
+- By default the game goes on without end. If **Words per game** is set on the settings screen, dots under the grid show progress, and after the last word an "All done!" screen (also spoken) offers a **Play again** button.
 
 ## Playing on an iPad
 
@@ -24,7 +25,7 @@ The name is kept on the device only. It can be changed on the settings screen (s
 
 ## Settings and recording your own voice
 
-Press and hold the faint gear icon in the top-left corner for a moment (until the ring around it fills) to open the **Settings** screen (or add `&setup` to the link in Safari). There you can set the player's name and record the phrases in your own voice. Record each word, the invitation and the praise phrases; each recording plays back so you can check it. Silence before and after is trimmed and volumes are evened out automatically.
+Press and hold the faint gear icon in the top-left corner for a moment (until the ring around it fills) to open the **Settings** screen (or add `&setup` to the link in Safari). There you can set the player's name, choose the number of words per game, and record the phrases in your own voice. Record each word, the invitation and the praise phrases; each recording plays back so you can check it. Silence before and after is trimmed and volumes are evened out automatically.
 
 - Recordings are stored on the device only and are never uploaded.
 - Record from inside the Home Screen app if that is how the game is played, as the Home Screen app and Safari keep separate storage.

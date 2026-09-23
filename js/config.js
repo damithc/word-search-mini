@@ -43,6 +43,13 @@ export const PRAISE_PHRASES = [
   'Great work, {name}!',
 ];
 
+// Said when all the words in a game have been found (see WORDS_PER_GAME_CHOICES).
+export const DONE_PHRASE = 'All done, {name}! Great job!';
+
+// Choices for "Words per game" on the settings screen. null means the game
+// goes on without end.
+export const WORDS_PER_GAME_CHOICES = [null, 3, 5, 8, 10, 15, 20];
+
 // Pictures shown after a word is found.
 export const REWARD_PICTURES = Array.from({ length: 10 },
   (_, i) => `images/rewards/train-${String(i + 1).padStart(2, '0')}.jpg`);

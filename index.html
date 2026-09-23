@@ -22,11 +22,22 @@
       <div id="word-letters" role="heading" aria-level="1"></div>
     </div>
     <div id="grid"></div>
+    <!-- One dot per word in the game, filled as words are found -->
+    <div id="progress" role="img" hidden></div>
   </main>
 
   <div id="reward" hidden>
     <img id="reward-img" alt="">
     <div id="reward-track"><div id="reward-bar"></div></div>
+  </div>
+
+  <div id="done" hidden>
+    <p id="done-title">All done!</p>
+    <div id="done-dots" aria-hidden="true"></div>
+    <button id="play-again">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l10.5-6.5z" fill="currentColor"/></svg>
+      Play again
+    </button>
   </div>
 
   <!-- Press and hold to open the grown-up screen; the ring fills while holding -->
@@ -60,6 +71,14 @@
       <button id="hear-name">Hear it</button>
     </div>
     <p id="name-note" hidden>Your recorded phrases below still say the old name. Re-record them to match.</p>
+
+    <h2 class="section">Game length</h2>
+    <p>With a set number of words, dots under the grid show how many are left, and the
+      game ends with "All done!" and a Play again button.</p>
+    <label class="name-row">
+      <span class="field-label">Words per game</span>
+      <select id="words-per-game"></select>
+    </label>
 
     <h2 class="section">Voice recordings</h2>
     <p>Record each phrase in your own voice. Recordings stay on this device only.

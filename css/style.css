@@ -2,6 +2,8 @@
   --bg: #f3f0e8;
   --cell-bg: #ffffff;
   --cell-border: #ddd6c8;
+  --target-bg: #f1f6fb;
+  --target-border: #a9c7e2;
   --ink: #2e3440;
   --selected: #ffe08a;
   --selected-border: #e8b923;
@@ -124,6 +126,8 @@ body {
 
 .tile .face {
   font-size: calc(var(--tile) * 0.58);
+  border-color: var(--target-border);
+  background: var(--target-bg);
   border-width: 3px;
 }
 
@@ -155,6 +159,37 @@ body {
 @keyframes pop {
   0%, 100% { transform: scale(1); }
   50% { transform: scale(1.12); }
+}
+
+/* Progress through a game: one dot per word */
+
+#progress {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: calc(var(--dot) * 0.6);
+  max-width: calc(var(--cell) * var(--size));
+}
+
+#progress[hidden] {
+  display: none;
+}
+
+.dot {
+  width: var(--dot);
+  height: var(--dot);
+  border: 2px solid var(--cell-border);
+  border-radius: 50%;
+  background: var(--cell-bg);
+}
+
+.dot.filled {
+  border-color: var(--found-border);
+  background: var(--found);
+}
+
+.dot.just-filled {
+  animation: pop 500ms ease-out;
 }
 
 /* The picture shown after a word is found */
@@ -211,6 +246,66 @@ body {
 
 @keyframes fill {
   to { transform: scaleX(1); }
+}
+
+/* The end of a game */
+
+#done {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 40px;
+  padding: 32px;
+  background: var(--bg);
+  opacity: 0;
+  transition: opacity 400ms ease;
+}
+
+#done.visible {
+  opacity: 1;
+}
+
+#done[hidden] {
+  display: none;
+}
+
+#done-title {
+  margin: 0;
+  font-size: min(14vw, 96px);
+  font-weight: 700;
+}
+
+#done-dots {
+  --dot: 28px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 14px;
+  max-width: 80vw;
+}
+
+#play-again {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  min-height: 96px;
+  padding: 0 48px 0 36px;
+  border: 3px solid var(--found-border);
+  border-radius: 48px;
+  background: var(--found);
+  color: var(--ink);
+  font: inherit;
+  font-size: 40px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+#play-again svg {
+  width: 48px;
+  height: 48px;
 }
 
 /* Settings button: faint so it doesn't draw attention during play.
@@ -337,7 +432,22 @@ body {
 
 .name-row {
   display: flex;
+  align-items: center;
   gap: 8px;
+}
+
+.field-label {
+  margin-right: 8px;
+}
+
+#words-per-game {
+  min-height: 44px;
+  padding: 0 12px;
+  border: 2px solid var(--cell-border);
+  border-radius: 12px;
+  background: var(--cell-bg);
+  color: var(--ink);
+  font: inherit;
 }
 
 #player-name {
@@ -388,6 +498,7 @@ body {
 
 @media (prefers-reduced-motion: reduce) {
   .nope .face,
+  .dot.just-filled,
   #target.speaking #word-img,
   .cell.found .face,
   .tile.found .face {

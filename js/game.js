@@ -1,6 +1,6 @@
 import {
-  GRID_SIZE, WORD_DIRECTIONS, WORDS, SPEECH, INVITE_PHRASE, PRAISE_PHRASES,
-  REWARD_PICTURES, FOUND_PAUSE_MS, REWARD_MS, REMINDER_MS,
+  GRID_SIZE, WORD_DIRECTIONS, WORDS, SPEECH, INVITE_PHRASE, PRAISE_PHRASES, DONE_PHRASE,
+  WORDS_PER_GAME_CHOICES, REWARD_PICTURES, FOUND_PAUSE_MS, REWARD_MS, REMINDER_MS,
 } from './config.js';
 import { makePuzzle, ShuffleBag } from './puzzle.js';
 import { Speaker } from './speech.js';
@@ -12,6 +12,7 @@ const FADE_MS = 400;
 const REPEAT_TAP_MS = 350;
 const NAME_KEY = 'playerName';
 const LINK_NAME_KEY = 'playerNameFromLink';
+const WORDS_PER_GAME_KEY = 'wordsPerGame';
 const SETUP_HOLD_MS = 1500;
 // Longest the found word stays up waiting for the praise to finish.
 const PRAISE_TIMEOUT_MS = 10000;
@@ -26,6 +27,8 @@ const gridEl = document.getElementById('grid');
 const rewardEl = document.getElementById('reward');
 const rewardImg = document.getElementById('reward-img');
 const rewardBar = document.getElementById('reward-bar');
+const progressEl = document.getElementById('progress');
+const doneEl = document.getElementById('done');
 
 const words = new ShuffleBag(WORDS);
 const pictures = new ShuffleBag(REWARD_PICTURES);
@@ -33,6 +36,8 @@ const praises = new ShuffleBag(PRAISE_PHRASES);
 const speaker = new Speaker(SPEECH);
 let playerName = readPlayerName();
 let nameWhenSettingsOpened = '';
+let wordsPerGame = readWordsPerGame(); // null: no end
+let wordsFound = 0; // in this game
 
 let entry = null; // current item from WORDS
 let word = '';
@@ -78,6 +83,65 @@ function readPlayerName() {
   } catch {
     return cleanName(param ?? '');
   }
+}
+
+function readWordsPerGame() {
+  try {
+    const saved = Number(localStorage.getItem(WORDS_PER_GAME_KEY));
+    return WORDS_PER_GAME_CHOICES.includes(saved) ? saved : null;
+  } catch {
+    return null;
+  }
+}
+
+function saveWordsPerGame(count) {
+  wordsPerGame = count;
+  try {
+    if (count) localStorage.setItem(WORDS_PER_GAME_KEY, String(count));
+    else localStorage.removeItem(WORDS_PER_GAME_KEY);
+  } catch {
+    // Storage can be unavailable; the setting lasts until the page closes.
+  }
+}
+
+// Fills `container` with `count` dots, the first `filled` of them filled.
+function showDots(container, count, filled, { popLast = false } = {}) {
+  container.replaceChildren(...Array.from({ length: count }, (_, i) => {
+    const dot = document.createElement('span');
+    dot.className = 'dot';
+    if (i < filled) dot.classList.add('filled');
+    if (popLast && i === filled - 1) dot.classList.add('just-filled');
+    return dot;
+  }));
+}
+
+function showProgress(options) {
+  progressEl.hidden = !wordsPerGame;
+  if (!wordsPerGame) return;
+  showDots(progressEl, wordsPerGame, wordsFound, options);
+  progressEl.setAttribute('aria-label', `${wordsFound} of ${wordsPerGame} words found`);
+}
+
+function isGameOver() {
+  return wordsPerGame !== null && wordsFound >= wordsPerGame;
+}
+
+// Ends a game: all the dots filled, a spoken "All done!", and a Play again button.
+function showDone() {
+  showDots(document.getElementById('done-dots'), wordsPerGame, wordsPerGame);
+  doneEl.hidden = false;
+  void doneEl.offsetWidth; // let the fade-in start from the beginning
+  doneEl.classList.add('visible');
+  speaker.say([{ text: fillPhrase(DONE_PHRASE, ''), clip: DONE_CLIP }], { interrupt: true });
+}
+
+function playAgain() {
+  speaker.stop();
+  wordsFound = 0;
+  showProgress();
+  startRound();
+  doneEl.classList.remove('visible');
+  setTimeout(() => { doneEl.hidden = true; }, FADE_MS);
 }
 
 function preloadNextPicture() {
@@ -149,6 +213,7 @@ function fillPhrase(template, theWord) {
 // ("Can you find it?"), since the word itself is said just before it.
 const wordClip = (w) => `word:${w}`;
 const INVITE_CLIP = 'invite';
+const DONE_CLIP = 'done';
 const praiseClip = (template) => `praise:${template}`;
 
 // Once some praise has been recorded, only recorded praise is used.
@@ -192,6 +257,7 @@ function onRelease(event) {
 function showSettings() {
   nameWhenSettingsOpened = playerName;
   document.getElementById('player-name').value = playerName;
+  document.getElementById('words-per-game').value = String(wordsPerGame ?? '');
   showRecordings();
   updateNameNote();
 }
@@ -211,12 +277,16 @@ function showRecordings() {
       title: 'When the word is found (said after the word)',
       items: PRAISE_PHRASES.map((t) => ({ id: praiseClip(t), label: fillPhrase(t, 'it') })),
     },
+    {
+      title: 'When all the words in a game are found',
+      items: [{ id: DONE_CLIP, label: fillPhrase(DONE_PHRASE, 'it') }],
+    },
   ], speaker);
 }
 
 // Points out that recorded phrases still say the old name.
 function updateNameNote() {
-  const phraseClips = [INVITE_CLIP, ...PRAISE_PHRASES.map(praiseClip)];
+  const phraseClips = [INVITE_CLIP, DONE_CLIP, ...PRAISE_PHRASES.map(praiseClip)];
   const note = document.getElementById('name-note');
   note.hidden = playerName === nameWhenSettingsOpened || !phraseClips.some((id) => speaker.hasClip(id));
 }
@@ -228,6 +298,16 @@ function watchNameField() {
     showRecordings();
     updateNameNote();
   });
+  // Changing the game length starts a new count.
+  const select = document.getElementById('words-per-game');
+  select.replaceChildren(...WORDS_PER_GAME_CHOICES.map((count) => new Option(count ?? 'Unlimited', count ?? '')));
+  select.addEventListener('change', () => {
+    saveWordsPerGame(select.value ? Number(select.value) : null);
+    wordsFound = 0;
+    showProgress();
+    fitToScreen();
+  });
+
   // Lets the name's pronunciation be checked with the built-in voice.
   document.getElementById('hear-name').addEventListener('click', () => {
     speaker.say([{ text: fillPhrase('Well done, {name}!', '') }], { interrupt: true });
@@ -290,6 +370,8 @@ function celebrate() {
   locked = true;
   sayOnRelease = true;
   foundAt = performance.now();
+  wordsFound += 1;
+  showProgress({ popLast: true });
   clearTimeout(reminderTimer);
   for (const index of selected) gridEl.children[index].classList.add('found');
   for (const tile of lettersEl.children) tile.classList.add('found');
@@ -313,7 +395,8 @@ function showReward() {
   rewardEl.classList.add('visible', 'filling');
 
   setTimeout(() => {
-    startRound();
+    if (isGameOver()) showDone();
+    else startRound();
     rewardEl.classList.remove('visible');
     setTimeout(() => { rewardEl.hidden = true; }, FADE_MS);
   }, FADE_MS + REWARD_MS);
@@ -329,18 +412,19 @@ function fitToScreen() {
   const minPictureHeight = 1.5;
   const maxPictureHeight = 3; // the picture grows into spare space up to this
   const pictureGap = 0.4;
+  const progress = wordsPerGame ? 0.3 : 0; // height of the progress dots
   const width = window.innerWidth - 2 * pad;
-  const height = window.innerHeight - 2 * pad - gap;
+  const height = window.innerHeight - 2 * pad - gap * (wordsPerGame ? 2 : 1);
   const longest = Math.max(...WORDS.map((w) => w.word.length));
   const lettersWidth = longest * tileScale * 1.1;
   const cell = Math.floor(Math.min(
     width / GRID_SIZE,
-    height / (GRID_SIZE + minPictureHeight),
+    height / (GRID_SIZE + progress + minPictureHeight),
     width / (minPictureHeight * pictureAspect + pictureGap + lettersWidth),
   ));
   const pictureHeight = Math.min(
     maxPictureHeight * cell,
-    height - GRID_SIZE * cell,
+    height - (GRID_SIZE + progress) * cell,
     (width - (pictureGap + lettersWidth) * cell) / pictureAspect,
   );
   const style = document.documentElement.style;
@@ -350,6 +434,7 @@ function fitToScreen() {
   style.setProperty('--picture-w', `${Math.floor(pictureHeight * pictureAspect)}px`);
   style.setProperty('--picture-h', `${Math.floor(pictureHeight)}px`);
   style.setProperty('--picture-gap', `${Math.floor(cell * pictureGap)}px`);
+  style.setProperty('--dot', `${Math.floor(cell * progress) || 0}px`);
 }
 
 gridEl.addEventListener('pointerdown', onTap);
@@ -396,5 +481,8 @@ loadVoiceRecordings().then(() => {
   if (new URLSearchParams(window.location.search).has('setup')) showSettings();
 });
 
+document.getElementById('play-again').addEventListener('click', playAgain);
+
+showProgress();
 fitToScreen();
 startRound();
