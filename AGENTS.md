@@ -33,7 +33,9 @@ These come from research on apps for autistic children and from the parent's fee
 1. If the word isn't found within a minute, the word and the invitation are said once more.
 1. Optional game length ("Words per game" in settings): dots under the grid show progress, and the game ends with an "All done!" screen and a Play again button. The default is unlimited.
 
-The settings screen opens by pressing and holding the faint gear in the top-left corner for 1.5 seconds (or with `?setup` in the URL). It has the player's name, game length, "Check for updates", and voice recording of every word and phrase.
+The settings screen opens by pressing and holding the faint gear in the top-left corner for 1.5 seconds (or with `?setup` in the URL). It has the player's name, game length, "Check for updates", "Choose a word" (play a chosen word now), and voice recording of every word and phrase.
+
+**Developer mode** is for testing, and is kept off the parent's settings: tapping the version number on the settings screen 5 times turns it on or off (a URL flag wouldn't work, as the Home Screen icon's link can't be changed). While it is on, a faint button in the top-right corner of the play screen, or the right arrow key, skips to the next word without counting it, and the settings screen shows a note so it isn't left on for the child. Put further developer-only tools behind this mode rather than on the settings screen.
 
 ## Code layout
 

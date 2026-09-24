@@ -49,6 +49,11 @@
     </svg>
   </button>
 
+  <!-- Developer mode only: skips to the next word -->
+  <button id="skip" aria-label="Next word" hidden>
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M5 4.5v15l11-7.5z"/><rect x="17" y="4.5" width="3" height="15" rx="1" fill="currentColor"/></svg>
+  </button>
+
   <div id="setup" hidden>
     <header>
       <div>
@@ -61,6 +66,9 @@
       </div>
     </header>
     <p id="setup-message" hidden></p>
+    <p id="dev-note" hidden>Developer mode is on: the button in the top-right corner of the game
+      skips to the next word, as does the right arrow key. Tap the version number 5 times to
+      turn it off.</p>
 
     <h2>Player's name</h2>
     <p>Said in phrases like "Well done, Sam!". It is only spoken, never shown, so if the
@@ -79,6 +87,11 @@
       <span class="field-label">Words per game</span>
       <select id="words-per-game"></select>
     </label>
+
+    <h2 class="section">Choose a word</h2>
+    <p>Tap a word to play it now, for example to practise a word from the day.
+      It replaces the current word.</p>
+    <div id="word-choices"></div>
 
     <h2 class="section">Voice recordings</h2>
     <p>Record each phrase in your own voice. Recordings stay on this device only.

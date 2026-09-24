@@ -25,7 +25,7 @@ The name is kept on the device only. It can be changed on the settings screen (s
 
 ## Settings and recording your own voice
 
-Press and hold the faint gear icon in the top-left corner for a moment (until the ring around it fills) to open the **Settings** screen (or add `&setup` to the link in Safari). There you can set the player's name, choose the number of words per game, and record the phrases in your own voice. Record each word, the invitation and the praise phrases; each recording plays back so you can check it. Silence before and after is trimmed and volumes are evened out automatically.
+Press and hold the faint gear icon in the top-left corner for a moment (until the ring around it fills) to open the **Settings** screen (or add `&setup` to the link in Safari). There you can set the player's name, choose the number of words per game, pick a word to play straight away (**Choose a word**), and record the phrases in your own voice. Record each word, the invitation and the praise phrases; each recording plays back so you can check it. Silence before and after is trimmed and volumes are evened out automatically.
 
 - Recordings are stored on the device only and are never uploaded.
 - Record from inside the Home Screen app if that is how the game is played, as the Home Screen app and Safari keep separate storage.
@@ -33,6 +33,8 @@ Press and hold the faint gear icon in the top-left corner for a moment (until th
 - Each recorded word or phrase is used in place of the built-in voice. Once some praise phrases are recorded, only those are used, so you don't need to record them all.
 
 The version number is shown at the top of that screen, next to the app name. The game fetches the latest version whenever it is opened while online (and still works offline); **Check for updates** on that screen reloads it if a newer version is available.
+
+**Developer mode**, for testing: tap the version number on the settings screen 5 times to turn it on or off. While it is on, a faint button in the top-right corner of the game (or the right arrow key) skips to the next word, and the settings screen says the mode is on.
 
 ## Changing words, pictures or timing
 

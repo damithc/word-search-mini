@@ -13,6 +13,10 @@ const REPEAT_TAP_MS = 350;
 const NAME_KEY = 'playerName';
 const LINK_NAME_KEY = 'playerNameFromLink';
 const WORDS_PER_GAME_KEY = 'wordsPerGame';
+const DEVELOPER_MODE_KEY = 'developerMode';
+// Taps on the version number, this close together, that toggle developer mode.
+const DEVELOPER_TAPS = 5;
+const DEVELOPER_TAPS_MS = 3000;
 const SETUP_HOLD_MS = 1500;
 // Longest the found word stays up waiting for the praise to finish.
 const PRAISE_TIMEOUT_MS = 10000;
@@ -38,6 +42,7 @@ let playerName = readPlayerName();
 let nameWhenSettingsOpened = '';
 let wordsPerGame = readWordsPerGame(); // null: no end
 let wordsFound = 0; // in this game
+let developerMode = readDeveloperMode();
 
 let entry = null; // current item from WORDS
 let word = '';
@@ -48,6 +53,7 @@ let nextPicture = null;
 let sayOnRelease = false; // praise when the finger that found the word lifts
 let foundAt = 0;
 let rewardTimer = null;
+let rewardEndTimer = null;
 let reminderTimer = null;
 let lastActivityAt = 0;
 const lastTapAt = new Map();
@@ -140,8 +146,7 @@ function playAgain() {
   wordsFound = 0;
   showProgress();
   startRound();
-  doneEl.classList.remove('visible');
-  setTimeout(() => { doneEl.hidden = true; }, FADE_MS);
+  hideOverlay(doneEl);
 }
 
 function preloadNextPicture() {
@@ -159,8 +164,9 @@ function makeTile(letter, className) {
   return el;
 }
 
-function startRound() {
-  entry = words.next();
+// Starts a round with the given word, or the next one from the shuffled list.
+function startRound(chosen = null) {
+  entry = chosen ?? words.next();
   word = entry.word;
   const { grid, cells } = makePuzzle(word, GRID_SIZE, WORD_DIRECTIONS);
   wordIndexOfCell = new Map(cells.map(([r, c], k) => [r * GRID_SIZE + c, k]));
@@ -394,12 +400,85 @@ function showReward() {
   void rewardEl.offsetWidth; // let the fade-in and bar animations start from the beginning
   rewardEl.classList.add('visible', 'filling');
 
-  setTimeout(() => {
+  rewardEndTimer = setTimeout(() => {
     if (isGameOver()) showDone();
     else startRound();
-    rewardEl.classList.remove('visible');
-    setTimeout(() => { rewardEl.hidden = true; }, FADE_MS);
+    hideOverlay(rewardEl);
   }, FADE_MS + REWARD_MS);
+}
+
+function hideOverlay(el) {
+  el.classList.remove('visible');
+  setTimeout(() => { el.hidden = true; }, FADE_MS);
+}
+
+// Leaves the current round, found or not, without counting it, and starts
+// one with the given word or the next word.
+function jumpToWord(chosen = null) {
+  speaker.stop();
+  clearTimeout(rewardTimer);
+  clearTimeout(rewardEndTimer);
+  sayOnRelease = false;
+  if (!rewardEl.hidden) hideOverlay(rewardEl);
+  if (!doneEl.hidden) {
+    wordsFound = 0;
+    showProgress();
+    hideOverlay(doneEl);
+  }
+  startRound(chosen);
+}
+
+// "Choose a word" on the settings screen: tapping a word plays it now.
+function watchWordChoices() {
+  document.getElementById('word-choices').replaceChildren(...WORDS.map((w) => {
+    const button = document.createElement('button');
+    button.textContent = w.word.toLowerCase();
+    button.addEventListener('click', () => {
+      document.getElementById('setup-done').click();
+      jumpToWord(w);
+    });
+    return button;
+  }));
+}
+
+function readDeveloperMode() {
+  try {
+    return localStorage.getItem(DEVELOPER_MODE_KEY) === 'on';
+  } catch {
+    return false;
+  }
+}
+
+function setDeveloperMode(on) {
+  developerMode = on;
+  try {
+    if (on) localStorage.setItem(DEVELOPER_MODE_KEY, 'on');
+    else localStorage.removeItem(DEVELOPER_MODE_KEY);
+  } catch {
+    // Storage can be unavailable; the mode lasts until the page closes.
+  }
+  document.getElementById('skip').hidden = !on;
+  document.getElementById('dev-note').hidden = !on;
+}
+
+// Developer mode, for testing, adds a button that skips to the next word.
+// Tapping the version number on the settings screen turns it on and off.
+function watchDeveloperMode() {
+  let taps = [];
+  document.getElementById('app-version').addEventListener('click', () => {
+    const now = performance.now();
+    taps = [...taps.filter((t) => now - t < DEVELOPER_TAPS_MS), now];
+    if (taps.length < DEVELOPER_TAPS) return;
+    taps = [];
+    setDeveloperMode(!developerMode);
+  });
+  document.getElementById('skip').addEventListener('click', () => jumpToWord());
+  // With a keyboard (e.g. on a Mac), the right arrow key also skips.
+  document.addEventListener('keydown', (event) => {
+    const setupOpen = !document.getElementById('setup').hidden;
+    if (developerMode && event.key === 'ArrowRight' && !setupOpen) jumpToWord();
+  });
+  setDeveloperMode(developerMode);
 }
 
 // Size the grid, word and picture so they fill the screen without scrolling.
@@ -477,6 +556,8 @@ navigator.serviceWorker?.register('sw.js').catch(() => {});
 
 watchSettingsButton();
 watchNameField();
+watchWordChoices();
+watchDeveloperMode();
 loadVoiceRecordings().then(() => {
   if (new URLSearchParams(window.location.search).has('setup')) showSettings();
 });
