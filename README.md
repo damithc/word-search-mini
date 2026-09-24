@@ -21,7 +21,7 @@ Portrait orientation gives the biggest letters.
 
 Phrases you have not recorded (see below) are said with the device's built-in voice. On some iPadOS versions, Safari can use a downloaded **Enhanced** or **Premium** voice (Settings > Accessibility > Spoken Content > Voices > English); on others it cannot, so recording your own voice is the reliable way to get natural speech.
 
-The name is kept on the device only. It can be changed on the settings screen (see below), where **Hear it** plays it in the built-in voice; if it is not pronounced well, spell it the way it sounds (for example `Reeveen`), since it is only spoken, never shown. A name in the link is used only when it differs from the last link used, so the Home Screen icon's link doesn't undo a change made on the settings screen.
+The name is kept on the device only. It can be changed on the settings screen (see below), where **Hear it** plays it in the built-in voice; if it is not pronounced well, spell it the way it sounds (for example `Ayden` for Aidan), since it is only spoken, never shown. A name in the link is used only when it differs from the last link used, so the Home Screen icon's link doesn't undo a change made on the settings screen.
 
 ## Settings and recording your own voice
 
