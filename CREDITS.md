@@ -1,6 +1,6 @@
 # Picture credits
 
-The pictures in `images/words/` and `images/rewards/` are photos from [Wikimedia Commons](https://commons.wikimedia.org/), cropped or resized for the web. Each photo keeps its original license, listed below.
+The active pictures in `images/words/` and `images/rewards/` are photos from [Wikimedia Commons](https://commons.wikimedia.org/), cropped or resized for the web. Each photo keeps its original license, listed below. Trial AI-generated candidates are listed separately and are not used by the game.
 
 ## Word pictures
 
@@ -41,6 +41,15 @@ The pictures in `images/words/` and `images/rewards/` are photos from [Wikimedia
 | `tree.jpg` | [Lone tree in field - geograph.org.uk - 5525733.jpg](https://commons.wikimedia.org/wiki/File:Lone_tree_in_field_-_geograph.org.uk_-_5525733.jpg) | JThomas | [CC BY-SA 2.0](https://creativecommons.org/licenses/by-sa/2.0) |
 | `sun.jpg` | [Blue sky and sun.png](https://commons.wikimedia.org/wiki/File:Blue_sky_and_sun.png) | Matt R | [CC0](http://creativecommons.org/publicdomain/zero/1.0/deed.en) |
 | `moon.jpg` | [Big Moon in Daytime (9105997796).jpg](https://commons.wikimedia.org/wiki/File:Big_Moon_in_Daytime_(9105997796).jpg) | denebola2025 from North Ogden, UT, USA | [CC BY 2.0](https://creativecommons.org/licenses/by/2.0) |
+
+## Trial AI-generated candidates
+
+These files are retained only for comparison with the active word pictures.
+
+| File | Source | Purpose |
+| --- | --- | --- |
+| `bus-ai.jpg` | OpenAI image generation, 24 September 2026 | Trial replacement for `bus.jpg` |
+| `tree-ai.jpg` | OpenAI image generation, 24 September 2026 | Trial replacement for `tree.jpg` |
 
 ## Reward pictures
 
