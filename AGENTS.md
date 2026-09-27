@@ -19,7 +19,7 @@ These come from research on apps for autistic children and from the parent's fee
 * **Calm senses.** Soft colours, no flashing, no confetti, no sudden or loud sounds. Animations are small (a gentle pop or wiggle) and respect `prefers-reduced-motion`.
 * **Errorless learning.** The child cannot get stuck: tapping a letter that isn't part of the word only wiggles it and never selects it.
 * **Rewards use the child's special interest.** Photos of Thomas the Tank Engine (real replica engines) are shown after each word.
-* **Colour photos, not cartoons,** for word pictures. Autistic children retain words better from colour photographs.
+* **Realistic colour pictures, not cartoons,** for word pictures. Autistic children retain words better from colour photographs, so word pictures are photo-realistic.
 * **Sound is started by the child** (tapping the picture, finding the word), apart from the one-minute reminder and the end-of-game phrase. Speech is slightly slow, and a pause separates the word from the phrase after it.
 * **Big touch targets.** Cells are as large as the screen allows, with no dead gaps between them. Selection happens on touch-down for a quick response.
 * **The child's name is only ever spoken, never shown,** because the parent may spell it phonetically to fix its pronunciation.
@@ -27,7 +27,7 @@ These come from research on apps for autistic children and from the parent's fee
 ## How the game works
 
 1. A round hides one word in a 10×10 grid of capital letters, running across or down, exactly once.
-1. The word's letters and a photo of its meaning are shown above the grid. Tapping them says the word, then "Can you find _word_, _name_?".
+1. The word's letters and a picture of its meaning are shown above the grid. Tapping them says the word, then "Can you find _word_, _name_?".
 1. Correct letters turn yellow (tap again to unselect). Wrong letters wiggle and stay unselected.
 1. When the word is found, it turns green, and the word and a random praise phrase are said. After the praise, a Thomas photo is shown for 4 seconds, then the next word starts.
 1. If the word isn't found within a minute, the word and the invitation are said once more.
@@ -51,7 +51,7 @@ The game is plain HTML, CSS and JavaScript modules with no build step and no dep
 * `js/recordings.js`: stores recordings in IndexedDB, on the device only.
 * `js/version.js`: the version shown on the settings screen.
 * `sw.js`: a service worker that fetches the latest files whenever online (network first) and falls back to saved copies offline.
-* `images/words/`: word photos. `images/rewards/`: Thomas photos. `CREDITS.md` lists the source and license of every photo.
+* `images/words/`: word pictures. `images/rewards/`: Thomas photos. `CREDITS.md` lists the source of every picture.
 * `tests/check-puzzles.mjs`: checks the puzzle generator and shuffling.
 
 Write code that matches the existing style: small named functions, `const` by default, comments that explain _why_ rather than _what_, and user-facing text in plain language.
@@ -73,16 +73,25 @@ The game is played as a Home Screen web app on an iPad. Safari there has several
 
 **Words:** everyday concrete nouns, 3 to 5 letters, that a young child in Singapore meets often. The list lives in `WORDS` in `js/config.js`, grouped by theme. Words must fit the 10×10 grid. Layout reserves room for the longest word, so longer words shrink the picture.
 
-**Pictures:** colour photos from Wikimedia Commons with open licenses (CC0, public domain, CC BY, CC BY-SA), each credited in `CREDITS.md`. The parent's preferences, from reviewing them:
+**Word pictures are generated with AI,** not collected from photo libraries, so that they all look alike. Earlier photos from Wikimedia Commons varied in style, framing and background, and Singapore versions of things were hard to find. Keep every new picture in the same style as the existing ones, and show new pictures to the parent before using them.
 
-* One clear, single object (one tree, one mango), not a group or a busy scene.
-* Plain and unfussy: no elaborate decoration, no fancy furniture, no distracting text or artwork.
-* The Singapore version where one exists: a green SG Bus double-decker, a blue ComfortDelGro taxi, an SMRT train, a Singapore Airlines plane, an HDB lift, a Javan myna. Avoid things rarely seen in Singapore (e.g. outdoor ducks).
-* Framed like the others: for example, the moon small in the sky, like the sun photo.
+The style, from the parent's reviews:
 
-**Processing:** crop tightly to the subject, then resize to fit 480×320 and save as JPEG quality 85 in `images/words/<word>.jpg`. When fetching from Commons, set a descriptive `User-Agent`, pause between requests, and use only the standard thumbnail widths (e.g. 330, 960, 1280); other widths get rate limited (HTTP 429).
+* **Photo-realistic,** in natural colours and soft daylight. No cartoon, illustration or 3D-render look.
+* **One clear, plain object,** centred, filling about half the frame: one tree, one mango, one sock. No groups, busy scenes, decoration or artwork.
+* **No people or hands, and no text or logos,** except where they make a vehicle recognisably Singaporean.
+* **Calm, uncluttered settings from a Singapore home or neighbourhood.** Household things sit on a light wood table or a pale tiled floor in a bright HDB-style flat with white walls, sometimes with a window showing blocks of flats. Outdoor things have tropical greenery and HDB blocks behind them, softly blurred.
+* **The Singapore version where one exists:** a green SG Bus double-decker, a blue ComfortDelGro taxi, an SMRT train, a Singapore Airlines plane, an HDB lift, a Javan myna. Avoid things rarely seen in Singapore (e.g. outdoor ducks).
+* **Sky things alone in the sky:** the sun small in a blue sky, the moon a crescent in a dark night sky.
+* **3:2 landscape, full frame,** with the subject away from the left and right edges, as a narrow screen trims the sides of the picture box.
 
-To add a word, add its entry to `WORDS`, its photo to `images/words/`, and a row to `CREDITS.md`, then run the tests.
+**Processing:** resize to 480×320 and save as JPEG quality 85 in `images/words/<word>.jpg`. To review pictures together, put them side by side on one contact sheet (e.g. with Python's Pillow) rather than opening them one by one.
+
+**Credits:** add a row to the word pictures table in `CREDITS.md` giving the image generator and the date, e.g. `OpenAI image generation, 27 September 2026 | OpenAI | AI-generated`.
+
+**Reward pictures stay real photos** of Thomas replica engines from Wikimedia Commons, credited in `CREDITS.md`. Don't generate pictures of Thomas, as the character is a trademark.
+
+To add a word, add its entry to `WORDS`, its picture to `images/words/`, and a row to `CREDITS.md`, then run the tests.
 
 ## Privacy
 
