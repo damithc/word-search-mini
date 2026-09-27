@@ -17,30 +17,30 @@ The pictures in `images/words/` and `images/rewards/` are either photos from [Wi
 | `cake.jpg` | OpenAI image generation, 27 September 2026 | OpenAI | AI-generated |
 | `rice.jpg` | OpenAI image generation, 27 September 2026 | OpenAI | AI-generated |
 | `apple.jpg` | OpenAI image generation, 27 September 2026 | OpenAI | AI-generated |
-| `mango.jpg` | [Mango fruit Nam Dok Mai.jpg](https://commons.wikimedia.org/wiki/File:Mango_fruit_Nam_Dok_Mai.jpg) | Ivar Leidus | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) |
-| `bed.jpg` | [Cozy bedroom with a large bed and simple decor in a modern home.jpg](https://commons.wikimedia.org/wiki/File:Cozy_bedroom_with_a_large_bed_and_simple_decor_in_a_modern_home.jpg) | Shixart1985 | [CC BY 2.0](https://creativecommons.org/licenses/by/2.0) |
+| `mango.jpg` | OpenAI image generation, 27 September 2026 | OpenAI | AI-generated |
+| `bed.jpg` | OpenAI image generation, 27 September 2026 | OpenAI | AI-generated |
 | `table.jpg` | OpenAI image generation, 24 September 2026 | OpenAI | AI-generated |
-| `chair.jpg` | [Library Chair dakota jackson.jpg](https://commons.wikimedia.org/wiki/File:Library_Chair_dakota_jackson.jpg) | Dakota Jackson Inc. | [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0) |
-| `fan.jpg` | [Floor fan.jpg](https://commons.wikimedia.org/wiki/File:Floor_fan.jpg) | Hans Olav Lien | [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0) |
-| `clock.jpg` | [Wall clock quartz.jpg](https://commons.wikimedia.org/wiki/File:Wall_clock_quartz.jpg) | Sridhar Rao | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) |
-| `cup.jpg` | [Cup of tea isolated on white background - Petr Kratochvil (cropped).jpg](https://commons.wikimedia.org/wiki/File:Cup_of_tea_isolated_on_white_background_-_Petr_Kratochvil_(cropped).jpg) | Petr Kratochvil | [CC0](http://creativecommons.org/publicdomain/zero/1.0/deed.en) |
+| `chair.jpg` | OpenAI image generation, 27 September 2026 | OpenAI | AI-generated |
+| `fan.jpg` | OpenAI image generation, 27 September 2026 | OpenAI | AI-generated |
+| `clock.jpg` | OpenAI image generation, 27 September 2026 | OpenAI | AI-generated |
+| `cup.jpg` | OpenAI image generation, 27 September 2026 | OpenAI | AI-generated |
 | `plate.jpg` | OpenAI image generation, 24 September 2026 | OpenAI | AI-generated |
-| `spoon.jpg` | [Stainless Steel Soup Spoon.jpg](https://commons.wikimedia.org/wiki/File:Stainless_Steel_Soup_Spoon.jpg) | Paolomarco | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) |
-| `fork.jpg` | [Fork (all alone).jpg](https://commons.wikimedia.org/wiki/File:Fork_(all_alone).jpg) | GarethBaloney | [CC0](http://creativecommons.org/publicdomain/zero/1.0/deed.en) |
-| `book.jpg` | [Ka'fluppernes første eventur.jpg](https://commons.wikimedia.org/wiki/File:Ka%27fluppernes_f%C3%B8rste_eventur.jpg) | Benny Bang Jensen | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) |
-| `pen.jpg` | [Bic 4 couleurs on (quite) white background 1.jpg](https://commons.wikimedia.org/wiki/File:Bic_4_couleurs_on_(quite)_white_background_1.jpg) | Kvardek du | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) |
-| `bag.jpg` | [School bag backpack.jpg](https://commons.wikimedia.org/wiki/File:School_bag_backpack.jpg) | Gamingforfun365 | [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0) |
-| `ball.jpg` | [BeachBall.jpg](https://commons.wikimedia.org/wiki/File:BeachBall.jpg) | User Norvy on en.wikipedia | Copyrighted free use |
-| `shirt.jpg` | [Vintage 90's Lacoste Polo Shirt.jpg](https://commons.wikimedia.org/wiki/File:Vintage_90%27s_Lacoste_Polo_Shirt.jpg) | Quercus acuta | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) |
+| `spoon.jpg` | OpenAI image generation, 27 September 2026 | OpenAI | AI-generated |
+| `fork.jpg` | OpenAI image generation, 27 September 2026 | OpenAI | AI-generated |
+| `book.jpg` | OpenAI image generation, 27 September 2026 | OpenAI | AI-generated |
+| `pen.jpg` | OpenAI image generation, 27 September 2026 | OpenAI | AI-generated |
+| `bag.jpg` | OpenAI image generation, 27 September 2026 | OpenAI | AI-generated |
+| `ball.jpg` | OpenAI image generation, 27 September 2026 | OpenAI | AI-generated |
+| `shirt.jpg` | OpenAI image generation, 27 September 2026 | OpenAI | AI-generated |
 | `sock.jpg` | OpenAI image generation, 24 September 2026 | OpenAI | AI-generated |
-| `shoe.jpg` | [Alexander McQueen Cupsole Sneaker in yellow suede.gif](https://commons.wikimedia.org/wiki/File:Alexander_McQueen_Cupsole_Sneaker_in_yellow_suede.gif) | Karldmartini | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) |
-| `cat.jpg` | [Cat August 2010-3.jpg](https://commons.wikimedia.org/wiki/File:Cat_August_2010-3.jpg) | Alvesgaspar | [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0) |
-| `dog.jpg` | [Puppy Dog on White.jpg](https://commons.wikimedia.org/wiki/File:Puppy_Dog_on_White.jpg) | George Hodan | [CC0](http://creativecommons.org/publicdomain/zero/1.0/deed.en) |
-| `bird.jpg` | [Javan Myna Among Fallen Leaves.jpg](https://commons.wikimedia.org/wiki/File:Javan_Myna_Among_Fallen_Leaves.jpg) | Admzfir | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) |
-| `fish.jpg` | [Carassius auratus auratus (goldfish) 1.jpg](https://commons.wikimedia.org/wiki/File:Carassius_auratus_auratus_(goldfish)_1.jpg) | James St. John | [CC BY 2.0](https://creativecommons.org/licenses/by/2.0) |
+| `shoe.jpg` | OpenAI image generation, 27 September 2026 | OpenAI | AI-generated |
+| `cat.jpg` | OpenAI image generation, 27 September 2026 | OpenAI | AI-generated |
+| `dog.jpg` | OpenAI image generation, 27 September 2026 | OpenAI | AI-generated |
+| `bird.jpg` | OpenAI image generation, 27 September 2026 | OpenAI | AI-generated |
+| `fish.jpg` | OpenAI image generation, 27 September 2026 | OpenAI | AI-generated |
 | `tree.jpg` | OpenAI image generation, 24 September 2026 | OpenAI | AI-generated |
-| `sun.jpg` | [Blue sky and sun.png](https://commons.wikimedia.org/wiki/File:Blue_sky_and_sun.png) | Matt R | [CC0](http://creativecommons.org/publicdomain/zero/1.0/deed.en) |
-| `moon.jpg` | [Big Moon in Daytime (9105997796).jpg](https://commons.wikimedia.org/wiki/File:Big_Moon_in_Daytime_(9105997796).jpg) | denebola2025 from North Ogden, UT, USA | [CC BY 2.0](https://creativecommons.org/licenses/by/2.0) |
+| `sun.jpg` | OpenAI image generation, 27 September 2026 | OpenAI | AI-generated |
+| `moon.jpg` | OpenAI image generation, 27 September 2026 | OpenAI | AI-generated |
 
 ## Retained originals for comparison
 
