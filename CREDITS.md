@@ -7,16 +7,16 @@ The pictures in `images/words/` and `images/rewards/` are either photos from [Wi
 | File | Original | Author | License |
 | --- | --- | --- | --- |
 | `bus.jpg` | OpenAI image generation, 24 September 2026 | OpenAI | AI-generated |
-| `car.jpg` | [(SGP-Singapore) Private Toyota Corolla SBB2335D 2024-09-12.jpg](https://commons.wikimedia.org/wiki/File:(SGP-Singapore)_Private_Toyota_Corolla_SBB2335D_2024-09-12.jpg) | S5A-0043 | [CC BY 4.0](https://creativecommons.org/licenses/by/4.0) |
-| `taxi.jpg` | [ComfortDelGro SHC3200J(Singapore Taxi) 08-11-2023.jpg](https://commons.wikimedia.org/wiki/File:ComfortDelGro_SHC3200J(Singapore_Taxi)_08-11-2023.jpg) | LN9267 | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) |
-| `train.jpg` | [Kawasaki C151 EMU.jpg](https://commons.wikimedia.org/wiki/File:Kawasaki_C151_EMU.jpg) | Samson Ng . D201@EAL | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) |
-| `plane.jpg` | [9V-SJH Airbus A350-941 Singapore Airlines, Manchester.jpg](https://commons.wikimedia.org/wiki/File:9V-SJH_Airbus_A350-941_Singapore_Airlines,_Manchester.jpg) | Ian Gratton | [CC BY 2.0](https://creativecommons.org/licenses/by/2.0) |
-| `lift.jpg` | [SLRP Woodlands.jpg](https://commons.wikimedia.org/wiki/File:SLRP_Woodlands.jpg) | CCL-DTL | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) |
-| `egg.jpg` | [Egg on white background.jpg](https://commons.wikimedia.org/wiki/File:Egg_on_white_background.jpg) | Paolo Neo | Public domain |
-| `milk.jpg` | [Glass of Milk (33657535532).jpg](https://commons.wikimedia.org/wiki/File:Glass_of_Milk_(33657535532).jpg) | NIAID | [CC BY 2.0](https://creativecommons.org/licenses/by/2.0) |
-| `cake.jpg` | [Chocolate cake on white plate.jpg](https://commons.wikimedia.org/wiki/File:Chocolate_cake_on_white_plate.jpg) | Peulle | [CC0](http://creativecommons.org/publicdomain/zero/1.0/deed.en) |
-| `rice.jpg` | [A bowl of rice.jpg](https://commons.wikimedia.org/wiki/File:A_bowl_of_rice.jpg) | Douglas Perkins | [CC0](http://creativecommons.org/publicdomain/zero/1.0/deed.en) |
-| `apple.jpg` | [Red Apple.jpg](https://commons.wikimedia.org/wiki/File:Red_Apple.jpg) | Abhijit Tembhekar from Mumbai, India | [CC BY 2.0](https://creativecommons.org/licenses/by/2.0) |
+| `car.jpg` | OpenAI image generation, 27 September 2026 | OpenAI | AI-generated |
+| `taxi.jpg` | OpenAI image generation, 27 September 2026 | OpenAI | AI-generated |
+| `train.jpg` | OpenAI image generation, 27 September 2026 | OpenAI | AI-generated |
+| `plane.jpg` | OpenAI image generation, 27 September 2026 | OpenAI | AI-generated |
+| `lift.jpg` | OpenAI image generation, 27 September 2026 | OpenAI | AI-generated |
+| `egg.jpg` | OpenAI image generation, 27 September 2026 | OpenAI | AI-generated |
+| `milk.jpg` | OpenAI image generation, 27 September 2026 | OpenAI | AI-generated |
+| `cake.jpg` | OpenAI image generation, 27 September 2026 | OpenAI | AI-generated |
+| `rice.jpg` | OpenAI image generation, 27 September 2026 | OpenAI | AI-generated |
+| `apple.jpg` | OpenAI image generation, 27 September 2026 | OpenAI | AI-generated |
 | `mango.jpg` | [Mango fruit Nam Dok Mai.jpg](https://commons.wikimedia.org/wiki/File:Mango_fruit_Nam_Dok_Mai.jpg) | Ivar Leidus | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) |
 | `bed.jpg` | [Cozy bedroom with a large bed and simple decor in a modern home.jpg](https://commons.wikimedia.org/wiki/File:Cozy_bedroom_with_a_large_bed_and_simple_decor_in_a_modern_home.jpg) | Shixart1985 | [CC BY 2.0](https://creativecommons.org/licenses/by/2.0) |
 | `table.jpg` | OpenAI image generation, 24 September 2026 | OpenAI | AI-generated |
