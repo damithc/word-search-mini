@@ -6,6 +6,11 @@ The pictures in `images/words/` and `images/rewards/` are either photos from [Wi
 
 | File | Original | Author | License |
 | --- | --- | --- | --- |
+| `nose.jpg` | OpenAI image generation, 30 September 2026 | OpenAI | AI-generated |
+| `mouth.jpg` | OpenAI image generation, 30 September 2026 | OpenAI | AI-generated |
+| `ear.jpg` | OpenAI image generation, 30 September 2026 | OpenAI | AI-generated |
+| `tummy.jpg` | OpenAI image generation, 30 September 2026 | OpenAI | AI-generated |
+| `finger.jpg` | OpenAI image generation, 30 September 2026 | OpenAI | AI-generated |
 | `bus.jpg` | OpenAI image generation, 24 September 2026 | OpenAI | AI-generated |
 | `car.jpg` | OpenAI image generation, 27 September 2026 | OpenAI | AI-generated |
 | `taxi.jpg` | OpenAI image generation, 27 September 2026 | OpenAI | AI-generated |
@@ -18,6 +23,11 @@ The pictures in `images/words/` and `images/rewards/` are either photos from [Wi
 | `rice.jpg` | OpenAI image generation, 27 September 2026 | OpenAI | AI-generated |
 | `apple.jpg` | OpenAI image generation, 27 September 2026 | OpenAI | AI-generated |
 | `mango.jpg` | OpenAI image generation, 27 September 2026 | OpenAI | AI-generated |
+| `bread.jpg` | OpenAI image generation, 30 September 2026 | OpenAI | AI-generated |
+| `banana.jpg` | OpenAI image generation, 30 September 2026 | OpenAI | AI-generated |
+| `orange.jpg` | OpenAI image generation, 30 September 2026 | OpenAI | AI-generated |
+| `almond.jpg` | OpenAI image generation, 30 September 2026 | OpenAI | AI-generated |
+| `cookie.jpg` | OpenAI image generation, 30 September 2026 | OpenAI | AI-generated |
 | `bed.jpg` | OpenAI image generation, 27 September 2026 | OpenAI | AI-generated |
 | `table.jpg` | OpenAI image generation, 24 September 2026 | OpenAI | AI-generated |
 | `chair.jpg` | OpenAI image generation, 27 September 2026 | OpenAI | AI-generated |
@@ -31,9 +41,20 @@ The pictures in `images/words/` and `images/rewards/` are either photos from [Wi
 | `pen.jpg` | OpenAI image generation, 27 September 2026 | OpenAI | AI-generated |
 | `bag.jpg` | OpenAI image generation, 27 September 2026 | OpenAI | AI-generated |
 | `ball.jpg` | OpenAI image generation, 27 September 2026 | OpenAI | AI-generated |
+| `sofa.jpg` | OpenAI image generation, 30 September 2026 | OpenAI | AI-generated |
+| `door.jpg` | OpenAI image generation, 30 September 2026 | OpenAI | AI-generated |
+| `bottle.jpg` | OpenAI image generation, 30 September 2026 | OpenAI | AI-generated |
+| `pillow.jpg` | OpenAI image generation, 30 September 2026 | OpenAI | AI-generated |
+| `key.jpg` | OpenAI image generation, 30 September 2026 | OpenAI | AI-generated |
+| `phone.jpg` | OpenAI image generation, 30 September 2026 | OpenAI | AI-generated |
+| `pencil.jpg` | OpenAI image generation, 30 September 2026 | OpenAI | AI-generated |
+| `crayon.jpg` | OpenAI image generation, 30 September 2026 | OpenAI | AI-generated |
+| `slide.jpg` | OpenAI image generation, 30 September 2026 | OpenAI | AI-generated |
 | `shirt.jpg` | OpenAI image generation, 27 September 2026 | OpenAI | AI-generated |
 | `sock.jpg` | OpenAI image generation, 24 September 2026 | OpenAI | AI-generated |
 | `shoe.jpg` | OpenAI image generation, 27 September 2026 | OpenAI | AI-generated |
+| `hat.jpg` | OpenAI image generation, 30 September 2026 | OpenAI | AI-generated |
+| `shorts.jpg` | OpenAI image generation, 30 September 2026 | OpenAI | AI-generated |
 | `cat.jpg` | OpenAI image generation, 27 September 2026 | OpenAI | AI-generated |
 | `dog.jpg` | OpenAI image generation, 27 September 2026 | OpenAI | AI-generated |
 | `bird.jpg` | OpenAI image generation, 27 September 2026 | OpenAI | AI-generated |
@@ -41,6 +62,10 @@ The pictures in `images/words/` and `images/rewards/` are either photos from [Wi
 | `tree.jpg` | OpenAI image generation, 24 September 2026 | OpenAI | AI-generated |
 | `sun.jpg` | OpenAI image generation, 27 September 2026 | OpenAI | AI-generated |
 | `moon.jpg` | OpenAI image generation, 27 September 2026 | OpenAI | AI-generated |
+| `flower.jpg` | OpenAI image generation, 30 September 2026 | OpenAI | AI-generated |
+| `rabbit.jpg` | OpenAI image generation, 30 September 2026 | OpenAI | AI-generated |
+| `monkey.jpg` | OpenAI image generation, 30 September 2026 | OpenAI | AI-generated |
+| `frog.jpg` | OpenAI image generation, 30 September 2026 | OpenAI | AI-generated |
 
 ## Retained originals for comparison
 

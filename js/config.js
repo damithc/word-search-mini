@@ -5,10 +5,16 @@ export const GRID_SIZE = 10;
 // Directions a word may run in: 'across' (left to right), 'down' (top to bottom).
 export const WORD_DIRECTIONS = ['across', 'down'];
 
-// Everyday nouns for a young child in Singapore, 3-5 letters long.
+// Everyday nouns for a young child in Singapore, 3-6 letters long.
 // Words must use only the letters A-Z and be no longer than GRID_SIZE.
 // Each word is shown with a picture of what it means. See CREDITS.md for sources.
 export const WORDS = [
+  // Body parts
+  { word: 'NOSE', picture: 'images/words/nose.jpg' },
+  { word: 'MOUTH', picture: 'images/words/mouth.jpg' },
+  { word: 'EAR', picture: 'images/words/ear.jpg' },
+  { word: 'TUMMY', picture: 'images/words/tummy.jpg' },
+  { word: 'FINGER', picture: 'images/words/finger.jpg' },
   // Getting around
   { word: 'BUS', picture: 'images/words/bus.jpg' },
   { word: 'CAR', picture: 'images/words/car.jpg' },
@@ -23,6 +29,11 @@ export const WORDS = [
   { word: 'RICE', picture: 'images/words/rice.jpg' },
   { word: 'APPLE', picture: 'images/words/apple.jpg' },
   { word: 'MANGO', picture: 'images/words/mango.jpg' },
+  { word: 'BREAD', picture: 'images/words/bread.jpg' },
+  { word: 'BANANA', picture: 'images/words/banana.jpg' },
+  { word: 'ORANGE', picture: 'images/words/orange.jpg' },
+  { word: 'ALMOND', picture: 'images/words/almond.jpg' },
+  { word: 'COOKIE', picture: 'images/words/cookie.jpg' },
   // At home
   { word: 'BED', picture: 'images/words/bed.jpg' },
   { word: 'TABLE', picture: 'images/words/table.jpg' },
@@ -37,10 +48,22 @@ export const WORDS = [
   { word: 'PEN', picture: 'images/words/pen.jpg' },
   { word: 'BAG', picture: 'images/words/bag.jpg' },
   { word: 'BALL', picture: 'images/words/ball.jpg' },
+  { word: 'SOFA', picture: 'images/words/sofa.jpg' },
+  { word: 'DOOR', picture: 'images/words/door.jpg' },
+  { word: 'BOTTLE', picture: 'images/words/bottle.jpg' },
+  { word: 'PILLOW', picture: 'images/words/pillow.jpg' },
+  { word: 'KEY', picture: 'images/words/key.jpg' },
+  { word: 'PHONE', picture: 'images/words/phone.jpg' },
+  // School and play
+  { word: 'PENCIL', picture: 'images/words/pencil.jpg' },
+  { word: 'CRAYON', picture: 'images/words/crayon.jpg' },
+  { word: 'SLIDE', picture: 'images/words/slide.jpg' },
   // Clothes
   { word: 'SHIRT', picture: 'images/words/shirt.jpg' },
   { word: 'SOCK', picture: 'images/words/sock.jpg' },
   { word: 'SHOE', picture: 'images/words/shoe.jpg' },
+  { word: 'HAT', picture: 'images/words/hat.jpg' },
+  { word: 'SHORTS', picture: 'images/words/shorts.jpg' },
   // Nature
   { word: 'CAT', picture: 'images/words/cat.jpg' },
   { word: 'DOG', picture: 'images/words/dog.jpg' },
@@ -49,6 +72,10 @@ export const WORDS = [
   { word: 'TREE', picture: 'images/words/tree.jpg' },
   { word: 'SUN', picture: 'images/words/sun.jpg' },
   { word: 'MOON', picture: 'images/words/moon.jpg' },
+  { word: 'FLOWER', picture: 'images/words/flower.jpg' },
+  { word: 'RABBIT', picture: 'images/words/rabbit.jpg' },
+  { word: 'MONKEY', picture: 'images/words/monkey.jpg' },
+  { word: 'FROG', picture: 'images/words/frog.jpg' },
 ];
 
 // The word is said aloud when the picture or word is tapped, and when the word is found.
